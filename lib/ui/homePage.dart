@@ -355,6 +355,7 @@ class AppState extends State<Riverto> {
                       ),
                     ),
                   ),
+                  //feedback button
                   Container(
                     child: IconButton(
                       iconSize: 26,
@@ -374,6 +375,7 @@ class AppState extends State<Riverto> {
                 ]),
               ),
               Padding(padding: EdgeInsets.only(top: 20)),
+              //Search bar
               TextField(
                 onSubmitted: (String value) {
                   search();
@@ -436,6 +438,7 @@ class AppState extends State<Riverto> {
                 ),
               ),
               searchedList.isNotEmpty
+              //searched songs
                   ? ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
@@ -505,6 +508,8 @@ class AppState extends State<Riverto> {
                         );
                       },
                     )
+
+                    //No search
                   : FutureBuilder(
                       future: topSongs(),
                       builder: (context, data) {
@@ -526,6 +531,7 @@ class AppState extends State<Riverto> {
                                     ),
                                   ),
                                 ),
+                                //List of songs
                                 SingleChildScrollView(
                                   child: Container(
                                     //padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
@@ -556,7 +562,7 @@ class AppState extends State<Riverto> {
                             valueColor:
                                 new AlwaysStoppedAnimation<Color>(accent),
                           ),
-                        ));
+                        ),);
                       },
                     ),
             ],
@@ -566,6 +572,7 @@ class AppState extends State<Riverto> {
     );
   }
 
+  //Home screen songs
   Widget getTopSong(String image, String title, String subtitle, String id) {
     return InkWell(
       onTap: () {
