@@ -219,7 +219,7 @@ class AppState extends State<Riverto> {
         ),
       ),
       child: Scaffold(
-        resizeToAvoidBottomPadding: false,
+        // resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.transparent,
         //backgroundColor: Color(0xff384850),
         bottomNavigationBar: kUrl != ""
