@@ -40,6 +40,8 @@ class AppState extends State<Riverto> {
       statusBarColor: Colors.transparent,
     ));
 
+  //=============================================================================
+  //Notifications
     MediaNotification.setListener('play', () {
       setState(() {
         playerState = PlayerState.playing;
@@ -62,6 +64,7 @@ class AppState extends State<Riverto> {
       MediaNotification.hideNotification();
     });
   }
+  //====================================================
 
   search() async {
     String searchQuery = searchBar.text;
@@ -106,9 +109,9 @@ class AppState extends State<Riverto> {
     String filepath;
     String filepath2;
     var status = await Permission.storage.status;
-    if (status.isUndetermined || status.isDenied) {
-      // code of read or write file in external storage (SD card)
-      // You can request multiple permissions at once.
+    if (status.isUndetermined || status.isDenied) { 
+      
+      //Getting permissions
       Map<Permission, PermissionStatus> statuses = await [
         Permission.storage,
       ].request();
@@ -142,7 +145,8 @@ class AppState extends State<Riverto> {
 
       final filename = title + ".m4a";
       final artname = title + "_artwork.jpg";
-      //Directory appDocDir = await getExternalStorageDirectory();
+
+      //Path for saving the song
       String dlPath = await ExtStorage.getExternalStoragePublicDirectory(
           ExtStorage.DIRECTORY_MUSIC);
       await File(dlPath + "/" + filename)
@@ -151,6 +155,7 @@ class AppState extends State<Riverto> {
       await File(dlPath + "/" + artname)
           .create(recursive: true)
           .then((value) => filepath2 = value.path);
+
       if (has_320 == "true") {
         kUrl = rawkUrl.replaceAll("_96.mp4", "_320.mp4");
         final client = http.Client();
@@ -261,7 +266,6 @@ class AppState extends State<Riverto> {
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 0.0, top: 7, bottom: 7, right: 15),
-                          //child: Image.network("https://sgdccdnems06.cdnsrv.jio.com/c.saavncdn.com/830/Music-To-Be-Murdered-By-English-2020-20200117040807-500x500.jpg"),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8.0),
                             child: CachedNetworkImage(
