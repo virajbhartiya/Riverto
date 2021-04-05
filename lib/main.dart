@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Riverto/signIn.dart';
 import 'package:flutter/material.dart';
 import 'package:Riverto/style/appColors.dart';
@@ -16,6 +18,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool log = false;
+
   @override
   void initState() {
     super.initState();
@@ -43,7 +46,11 @@ class _MyAppState extends State<MyApp> {
         primaryColor: accent,
         canvasColor: Colors.transparent,
       ),
-      home: log != null ? log ? Riverto() : SignIn() : SignIn(),
+      home: log != null
+          ? log
+              ? Riverto()
+              : SignIn()
+          : SignIn(),
     );
   }
 }

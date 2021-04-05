@@ -1,5 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Models/recentlyPlayed.dart';
+
 class Const {
   static void setValues(String key, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -12,3 +14,5 @@ class Const {
     await prefs.setBool("logIn", true);
   }
 }
+
+List<RecentlyPlayed> recentSongs = [];

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:Riverto/Models/recentlyPlayed.dart';
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -20,6 +21,7 @@ import 'package:Riverto/style/appColors.dart';
 import 'package:Riverto/ui/feedback.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:Riverto/const.dart';
 
 class Riverto extends StatefulWidget {
   @override
@@ -34,14 +36,13 @@ class AppState extends State<Riverto> {
 
   void initState() {
     super.initState();
-
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Color(0xff1c252a),
       statusBarColor: Colors.transparent,
     ));
 
-  //=============================================================================
-  //Notifications
+    //=============================================================================
+    //Notifications
     MediaNotification.setListener('play', () {
       setState(() {
         playerState = PlayerState.playing;
@@ -79,6 +80,17 @@ class AppState extends State<Riverto> {
   getSongDetails(String id, var context) async {
     try {
       await fetchSongDetails(id);
+      print("before");
+      RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
+        ..title = title
+        ..url = kUrl
+        ..album = album
+        ..artist = artist
+        ..lyrics = lyrics
+        ..image = image;
+
+      recentSongs.add(recentlyPlayed);
+      print(recentSongs[3].url);
     } catch (e) {
       artist = "Unknown";
     }
@@ -109,8 +121,7 @@ class AppState extends State<Riverto> {
     String filepath;
     String filepath2;
     var status = await Permission.storage.status;
-    if (status.isUndetermined || status.isDenied) { 
-      
+    if (status.isUndetermined || status.isDenied) {
       //Getting permissions
       Map<Permission, PermissionStatus> statuses = await [
         Permission.storage,
@@ -438,7 +449,7 @@ class AppState extends State<Riverto> {
                 ),
               ),
               searchedList.isNotEmpty
-              //searched songs
+                  //searched songs
                   ? ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
@@ -509,7 +520,7 @@ class AppState extends State<Riverto> {
                       },
                     )
 
-                    //No search
+                  //No search
                   : FutureBuilder(
                       future: topSongs(),
                       builder: (context, data) {
@@ -556,13 +567,14 @@ class AppState extends State<Riverto> {
                             ),
                           );
                         return Center(
-                            child: Padding(
-                          padding: const EdgeInsets.all(35.0),
-                          child: CircularProgressIndicator(
-                            valueColor:
-                                new AlwaysStoppedAnimation<Color>(accent),
+                          child: Padding(
+                            padding: const EdgeInsets.all(35.0),
+                            child: CircularProgressIndicator(
+                              valueColor:
+                                  new AlwaysStoppedAnimation<Color>(accent),
+                            ),
                           ),
-                        ),);
+                        );
                       },
                     ),
             ],
