@@ -1,83 +1,55 @@
 import 'dart:io';
-import 'dart:ui';
 
+import 'package:Riverto/API/saavn.dart';
 import 'package:Riverto/Models/recentlyPlayed.dart';
-import 'package:Riverto/ui/recentlyPlayedScreen.dart';
+import 'package:Riverto/const.dart';
+import 'package:Riverto/style/appColors.dart';
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import "package:flutter/material.dart";
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
-import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:Riverto/API/saavn.dart';
-import 'package:Riverto/music.dart';
-import 'package:Riverto/style/appColors.dart';
-import 'package:Riverto/ui/feedback.dart';
+import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:Riverto/const.dart';
+import '../music.dart';
+import 'feedback.dart';
 
-class Riverto extends StatefulWidget {
+//TODO: rmeove add to recently played
+//TODO:add list items as per song list
+
+class RecentlyPlayedScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return AppState();
-  }
+  _RecentlyPlayedScreenState createState() => _RecentlyPlayedScreenState();
 }
 
-class AppState extends State<Riverto> {
-  TextEditingController searchBar = TextEditingController();
-  bool fetchingSongs = false;
+class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
+  static List<RecentlyPlayed> songs;
 
+  Future<List<RecentlyPlayed>> getSongs() async {
+    return await Const.recentlyPlayedList();
+  }
+
+  void change() async {
+    songs = await getSongs();
+  }
+
+  @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Color(0xff1c252a),
-      statusBarColor: Colors.transparent,
-    ));
-
-    //=============================================================================
-    //Notifications
-    MediaNotification.setListener('play', () {
-      setState(() {
-        playerState = PlayerState.playing;
-        status = 'play';
-        audioPlayer.play(kUrl);
-      });
-    });
-
-    MediaNotification.setListener('pause', () {
-      setState(() {
-        status = 'pause';
-        audioPlayer.pause();
-      });
-    });
-
-    MediaNotification.setListener("close", () {
-      audioPlayer.stop();
-      dispose();
-      checker = "no";
-      MediaNotification.hideNotification();
+    change();
+    songs.getRange(0, songs.length).forEach((element) {
+      print(element.title);
     });
   }
-  //====================================================
 
-  search() async {
-    String searchQuery = searchBar.text;
-    if (searchQuery.isEmpty) return;
-    fetchingSongs = true;
-    setState(() {});
-    await fetchSongsList(searchQuery);
-    fetchingSongs = false;
-    setState(() {});
-  }
-
+//TODO:Change parameters
   getSongDetails(String id, var context) async {
     try {
       await fetchSongDetails(id);
@@ -126,7 +98,7 @@ class AppState extends State<Riverto> {
     var status = await Permission.storage.status;
     if (status.isUndetermined || status.isDenied) {
       //Getting permissions
-      Map<Permission, PermissionStatus> statuses = await [
+      await [
         Permission.storage,
       ].request();
     }
@@ -238,9 +210,7 @@ class AppState extends State<Riverto> {
         ),
       ),
       child: Scaffold(
-        // resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.transparent,
-        //backgroundColor: Color(0xff384850),
         bottomNavigationBar: kUrl != ""
             ? Container(
                 height: 75,
@@ -387,93 +357,16 @@ class AppState extends State<Riverto> {
                     ),
                   ),
                   //recentlyPlayed button
-                  Container(
-                    child: IconButton(
-                      iconSize: 26,
-                      alignment: Alignment.center,
-                      icon: Icon(MdiIcons.music),
-                      color: accent,
-                      onPressed: () => {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => RecentlyPlayedScreen(),
-                          ),
-                        ),
-                      },
-                    ),
-                  )
                 ]),
               ),
               Padding(padding: EdgeInsets.only(top: 20)),
               //Search bar
-              TextField(
-                onSubmitted: (String value) {
-                  search();
-                },
-                controller: searchBar,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: accent,
-                ),
-                cursorColor: Colors.green[50],
-                decoration: InputDecoration(
-                  fillColor: Color(0xff263238),
-                  filled: true,
-                  enabledBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(100),
-                    ),
-                    borderSide: BorderSide(
-                      color: Color(0xff263238),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(100),
-                    ),
-                    borderSide: BorderSide(color: accent),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: fetchingSongs
-                        ? SizedBox(
-                            height: 18,
-                            width: 18,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(accent),
-                              ),
-                            ),
-                          )
-                        : Icon(
-                            Icons.search,
-                            color: accent,
-                          ),
-                    color: accent,
-                    onPressed: () {
-                      search();
-                    },
-                  ),
-                  border: InputBorder.none,
-                  hintText: "Search...",
-                  hintStyle: TextStyle(
-                    color: accent,
-                  ),
-                  contentPadding: const EdgeInsets.only(
-                    left: 18,
-                    right: 20,
-                    top: 14,
-                    bottom: 14,
-                  ),
-                ),
-              ),
-              searchedList.isNotEmpty
+              songs.length > 0
                   //searched songs
                   ? ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: searchedList.length,
+                      itemCount: songs.length,
                       itemBuilder: (BuildContext ctxt, int index) {
                         return Padding(
                           padding: const EdgeInsets.only(top: 5, bottom: 5),
@@ -485,8 +378,8 @@ class AppState extends State<Riverto> {
                             elevation: 0,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(10.0),
-                              onTap: () => getSongDetails(
-                                  searchedList[index]["id"], context),
+                              onTap: () =>
+                                  getSongDetails(songs[index].id, context),
                               onLongPress: () => topSongs(),
                               splashColor: accent,
                               hoverColor: accent,
@@ -563,26 +456,6 @@ class AppState extends State<Riverto> {
                                   ),
                                 ),
                                 //List of songs
-                                SingleChildScrollView(
-                                  child: Container(
-                                    //padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.30,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: 30,
-                                      itemBuilder: (context, index) {
-                                        return getTopSong(
-                                            data.data[index]["image"],
-                                            data.data[index]["title"],
-                                            data.data[index]["more_info"]
-                                                    ["artistMap"]
-                                                ["primary_artists"][0]["name"],
-                                            data.data[index]["id"]);
-                                      },
-                                    ),
-                                  ),
-                                ),
                               ],
                             ),
                           );
@@ -600,64 +473,6 @@ class AppState extends State<Riverto> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  //Home screen songs
-  Widget getTopSong(String image, String title, String subtitle, String id) {
-    return InkWell(
-      onTap: () {
-        getSongDetails(id, context);
-      },
-      child: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.22,
-            width: MediaQuery.of(context).size.width / 2,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              color: Colors.transparent,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: CachedNetworkImageProvider(image),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 2,
-          ),
-          Text(
-            title
-                .split("(")[0]
-                .replaceAll("&amp;", "&")
-                .replaceAll("&#039;", "'")
-                .replaceAll("&quot;", "\""),
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            height: 2,
-          ),
-          Text(
-            subtitle,
-            style: TextStyle(
-              color: Colors.white38,
-              fontSize: 12.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
       ),
     );
   }
