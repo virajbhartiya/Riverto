@@ -17,6 +17,7 @@ class Const {
     await prefs.setBool("logIn", true);
   }
 
+//text
   static Future<Database> database;
   static void dbSetup() async {
     WidgetsFlutterBinding.ensureInitialized();
