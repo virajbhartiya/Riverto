@@ -38,20 +38,20 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-# flutter:
-#   uses-material-design: true
-#   fonts:
-#     - family: DMSans
-#       fonts:
-#         - asset: fonts/DMSans-Bold.ttf
-#         - asset: fonts/DMSans-Italic.ttf
-#         - asset: fonts/DMSans-Regular.ttf
-#         - asset: fonts/DMSans-Medium.ttf
 flutter:
   uses-material-design: true
   fonts:
-    - family: Less
+    - family: DMSans
       fonts:
-        - asset: fonts/Less.otf
-        - asset: fonts/Less-Light.otf
-        - asset: fonts/Less-Bold.otf
+        - asset: fonts/DMSans-Bold.ttf
+        - asset: fonts/DMSans-Italic.ttf
+        - asset: fonts/DMSans-Regular.ttf
+        - asset: fonts/DMSans-Medium.ttf
+# flutter:
+#   uses-material-design: true
+#   fonts:
+#     - family: Less
+#       fonts:
+#         - asset: fonts/Less.otf
+#         - asset: fonts/Less-Light.otf
+#         - asset: fonts/Less-Bold.otf

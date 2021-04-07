@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
       title: "Riverto",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: "Less",
+        fontFamily: "DMSans",
         accentColor: accent,
         primaryColor: accent,
         canvasColor: Colors.transparent,
