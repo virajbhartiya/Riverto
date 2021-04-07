@@ -26,17 +26,18 @@ dependencies:
   gradient_widgets: ^0.5.2
   http: ^0.12.2
   material_design_icons_flutter: 4.0.5345
-  path_provider: 
+  path: null
+  path_provider: null
   permission_handler: ^5.0.1+1
   progress_dialog: ^1.2.4
-  shared_preferences:
+  shared_preferences: null
+  sqflite: null
   url_launcher: ^5.5.0
-  sqflite:
-  path:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_particles: ^1.0.0+7
 
 flutter:
   uses-material-design: true
