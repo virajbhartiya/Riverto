@@ -54,4 +54,4 @@ flutter:
       fonts:
         - asset: fonts/Less.otf
         - asset: fonts/Less-Light.otf
-        - asset: fonts/DMSans-Bold.otf
+        - asset: fonts/Less-Bold.otf
