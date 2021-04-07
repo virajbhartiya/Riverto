@@ -30,41 +30,24 @@ class RecentlyPlayedScreen extends StatefulWidget {
 }
 
 class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
-  static List<RecentlyPlayed> songs;
-
-  Future<List<RecentlyPlayed>> getSongs() async {
-    return await Const.recentlyPlayedList();
-  }
-
-  void change() async {
-    songs = await getSongs();
-  }
-
   @override
   void initState() {
     super.initState();
-    change();
-    songs.getRange(0, songs.length).forEach((element) {
-      print(element.title);
-    });
+    Const.change();
+    if (Const.recentSongs != null) {
+      Const.recentSongs
+          .getRange(0, Const.recentSongs.length)
+          .forEach((element) {
+        print(element.id);
+      });
+    }
   }
 
-//TODO:Change parameters
-  getSongDetails(RecentlyPlayed song) async {
+  getSongDetails(String id) async {
     try {
-      await fetchSongDetails(song.id);
-      // RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
-      //   ..title = title
-      //   ..url = kUrl
-      //   ..album = album
-      //   ..artist = artist
-      //   ..lyrics = lyrics
-      //   ..image = image;
-
-      // recentSongs.add(recentlyPlayed);
-      // await Const.insertDog(recentlyPlayed);
-      // print((await Const.recentlyPlayedList())[0].title);
-      // print(recentSongs[3].url);
+      print(title);
+      await fetchSongDetails(id);
+      print(title);
     } catch (e) {
       artist = "Unknown";
     }
@@ -360,12 +343,12 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
               ),
               Padding(padding: EdgeInsets.only(top: 20)),
               //Search bar
-              songs.length > 0
+              Const.recentSongs != null
                   //searched songs
                   ? ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: songs.length,
+                      itemCount: Const.recentSongs.length,
                       itemBuilder: (BuildContext ctxt, int index) {
                         return Padding(
                           padding: const EdgeInsets.only(top: 5, bottom: 5),
@@ -377,7 +360,8 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                             elevation: 0,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(10.0),
-                              onTap: () => getSongDetails(songs[index]),
+                              onTap: () =>
+                                  getSongDetails(Const.recentSongs[index].id),
                               onLongPress: () => topSongs(),
                               splashColor: accent,
                               hoverColor: accent,
@@ -400,7 +384,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                       // ),
                                     ),
                                     title: Text(
-                                      (songs[index].title)
+                                      (Const.recentSongs[index].title)
                                           .toString()
                                           .split("(")[0]
                                           .replaceAll("&quot;", "\"")
@@ -408,7 +392,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     subtitle: Text(
-                                      songs[index].artist,
+                                      Const.recentSongs[index].artist,
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     trailing: IconButton(
@@ -417,7 +401,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                       onPressed: () async {
                                         toast("Starting Download!");
                                         downloadSong(
-                                          songs[index].id,
+                                          Const.recentSongs[index].id,
                                         );
                                       },
                                     ),

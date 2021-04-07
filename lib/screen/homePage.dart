@@ -81,19 +81,18 @@ class AppState extends State<Riverto> {
   getSongDetails(String id, var context) async {
     try {
       await fetchSongDetails(id);
-      print("before");
       RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
         ..title = title
         ..url = kUrl
         ..album = album
         ..artist = artist
         ..lyrics = lyrics
-        ..image = image;
+        ..image = image
+        ..id = id;
 
       // recentSongs.add(recentlyPlayed);
       await Const.insertDog(recentlyPlayed);
-      print((await Const.recentlyPlayedList())[0].title);
-      // print(recentSongs[3].url);
+      Const.change();
     } catch (e) {
       artist = "Unknown";
     }
@@ -126,7 +125,7 @@ class AppState extends State<Riverto> {
     var status = await Permission.storage.status;
     if (status.isUndetermined || status.isDenied) {
       //Getting permissions
-      Map<Permission, PermissionStatus> statuses = await [
+      await [
         Permission.storage,
       ].request();
     }

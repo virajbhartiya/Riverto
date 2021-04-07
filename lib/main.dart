@@ -29,9 +29,11 @@ class _MyAppState extends State<MyApp> {
 
   void isLoggedIn() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+
     setState(() {
       log = pref.getBool("logIn");
     });
+    Const.change();
   }
 
   @override

@@ -25,7 +25,7 @@ class Const {
       join(await getDatabasesPath(), 'recentlyPlayed.db'),
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE recent(title TEXT PRIMARY KEY, url TEXT,image TEXT,album TEXT,artist TEXT,lyrics TEXT)",
+          "CREATE TABLE recent(title TEXT PRIMARY KEY, url TEXT,image TEXT,album TEXT,artist TEXT,lyrics TEXT,id TEXT)",
         );
       },
       version: 1,
@@ -34,14 +34,12 @@ class Const {
 
   static Future<void> insertDog(RecentlyPlayed recent) async {
     final Database db = await database;
-    print("in insert");
 
     await db.insert(
       'recent',
       recent.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print("inserted");
   }
 
   static Future<List<RecentlyPlayed>> recentlyPlayedList() async {
@@ -51,13 +49,13 @@ class Const {
 
     return List.generate(maps.length, (i) {
       return RecentlyPlayed(
-        title: maps[i]['title'],
-        url: maps[i]['url'],
-        image: maps[i]['image'],
-        album: maps[i]['album'],
-        artist: maps[i]['artist'],
-        lyrics: maps[i]['lyrics'],
-      );
+          title: maps[i]['title'],
+          url: maps[i]['url'],
+          image: maps[i]['image'],
+          album: maps[i]['album'],
+          artist: maps[i]['artist'],
+          lyrics: maps[i]['lyrics'],
+          id: maps[i]['id']);
     });
   }
 
@@ -70,6 +68,14 @@ class Const {
       whereArgs: [title],
     );
   }
-}
 
-List<RecentlyPlayed> recentSongs = [];
+  static Future<List<RecentlyPlayed>> getSongs() async {
+    return await Const.recentlyPlayedList();
+  }
+
+  static void change() async {
+    recentSongs = await getSongs();
+  }
+
+  static List<RecentlyPlayed> recentSongs = [];
+}
