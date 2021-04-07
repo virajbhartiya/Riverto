@@ -18,7 +18,7 @@ class Const {
   }
 
   static Future<Database> database;
-  static void db_setup() async {
+  static void dbSetup() async {
     // Avoid errors caused by flutter upgrade.
 // Importing 'package:flutter/widgets.dart' is required.
     WidgetsFlutterBinding.ensureInitialized();
@@ -42,18 +42,48 @@ class Const {
     );
   }
 
-  Future<void> insertDog(RecentlyPlayed recent) async {
+  static Future<void> insertDog(RecentlyPlayed recent) async {
     // Get a reference to the database.
     final Database db = await database;
-
+    print("in insert");
     // Insert the Dog into the correct table. You might also specify the
     // `conflictAlgorithm` to use in case the same dog is inserted twice.
-    //
     // In this case, replace any previous data.
     await db.insert(
       'recent',
       recent.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print("inserted");
+  }
+
+  static Future<List<RecentlyPlayed>> recentlyPlayedList() async {
+    // Get a reference to the database.
+    final Database db = await database;
+
+    // Query the table for all The Dogs.
+    final List<Map<String, dynamic>> maps = await db.query('recent');
+
+    // Convert the List<Map<String, dynamic> into a List<Dog>.
+    return List.generate(maps.length, (i) {
+      return RecentlyPlayed(
+        title: maps[i]['title'],
+        url: maps[i]['url'],
+        image: maps[i]['image'],
+        album: maps[i]['album'],
+        artist: maps[i]['artist'],
+        lyrics: maps[i]['lyrics'],
+      );
+    });
+  }
+
+  static Future<void> deleteDbElement(String title) async {
+    final db = await database;
+
+    await db.delete(
+      'recent',
+      where: "title = ?",
+      whereArgs: [title],
     );
   }
 }

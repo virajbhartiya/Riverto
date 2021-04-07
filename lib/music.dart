@@ -433,14 +433,18 @@ class AudioAppState extends State<AudioApp> {
         Text(
           position != null
               ? "${positionText ?? ''} ".replaceFirst("0:0", "0")
-              : duration != null ? durationText : '',
+              : duration != null
+                  ? durationText
+                  : '',
           style: TextStyle(fontSize: 18.0, color: Colors.green[50]),
         ),
         Spacer(),
         Text(
           position != null
               ? "${durationText ?? ''}".replaceAll("0:", "")
-              : duration != null ? durationText : '',
+              : duration != null
+                  ? durationText
+                  : '',
           style: TextStyle(fontSize: 18.0, color: Colors.green[50]),
         )
       ]);

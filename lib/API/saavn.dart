@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:des_plugin/des_plugin.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 List searchedList = [];
