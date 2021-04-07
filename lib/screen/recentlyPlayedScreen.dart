@@ -21,51 +21,30 @@ import 'package:progress_dialog/progress_dialog.dart';
 import '../music.dart';
 import 'feedback.dart';
 
-//TODO: rmeove add to recently played
-//TODO:add list items as per song list
-
 class RecentlyPlayedScreen extends StatefulWidget {
   @override
   _RecentlyPlayedScreenState createState() => _RecentlyPlayedScreenState();
 }
 
 class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
-  static List<RecentlyPlayed> songs;
-
-  Future<List<RecentlyPlayed>> getSongs() async {
-    return await Const.recentlyPlayedList();
-  }
-
-  void change() async {
-    songs = await getSongs();
-  }
-
   @override
   void initState() {
     super.initState();
-    change();
-    songs.getRange(0, songs.length).forEach((element) {
-      print(element.title);
-    });
+    Const.change();
+    if (Const.recentSongs != null) {
+      Const.recentSongs
+          .getRange(0, Const.recentSongs.length)
+          .forEach((element) {
+        print(element.id);
+      });
+    }
   }
 
-//TODO:Change parameters
-  getSongDetails(String id, var context) async {
+  getSongDetails(String id) async {
     try {
+      print(title);
       await fetchSongDetails(id);
-      print("before");
-      RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
-        ..title = title
-        ..url = kUrl
-        ..album = album
-        ..artist = artist
-        ..lyrics = lyrics
-        ..image = image;
-
-      // recentSongs.add(recentlyPlayed);
-      await Const.insertDog(recentlyPlayed);
-      print((await Const.recentlyPlayedList())[0].title);
-      // print(recentSongs[3].url);
+      print(title);
     } catch (e) {
       artist = "Unknown";
     }
@@ -326,7 +305,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: GradientText(
-                        "Riverto.",
+                        "Recent.",
                         shaderRect: Rect.fromLTWH(13.0, 0.0, 100.0, 50.0),
                         gradient: LinearGradient(colors: [
                           Color(0xff4db6ac),
@@ -361,12 +340,12 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
               ),
               Padding(padding: EdgeInsets.only(top: 20)),
               //Search bar
-              songs.length > 0
+              Const.recentSongs != null
                   //searched songs
                   ? ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: songs.length,
+                      itemCount: Const.recentSongs.length,
                       itemBuilder: (BuildContext ctxt, int index) {
                         return Padding(
                           padding: const EdgeInsets.only(top: 5, bottom: 5),
@@ -379,7 +358,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(10.0),
                               onTap: () =>
-                                  getSongDetails(songs[index].id, context),
+                                  getSongDetails(Const.recentSongs[index].id),
                               onLongPress: () => topSongs(),
                               splashColor: accent,
                               hoverColor: accent,
@@ -402,7 +381,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                       // ),
                                     ),
                                     title: Text(
-                                      (searchedList[index]['title'])
+                                      (Const.recentSongs[index].title)
                                           .toString()
                                           .split("(")[0]
                                           .replaceAll("&quot;", "\"")
@@ -410,8 +389,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     subtitle: Text(
-                                      searchedList[index]['more_info']
-                                          ["singers"],
+                                      Const.recentSongs[index].artist,
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     trailing: IconButton(
@@ -420,7 +398,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                       onPressed: () async {
                                         toast("Starting Download!");
                                         downloadSong(
-                                          searchedList[index]["id"],
+                                          Const.recentSongs[index].id,
                                         );
                                       },
                                     ),
@@ -434,42 +412,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                     )
 
                   //No search
-                  : FutureBuilder(
-                      future: topSongs(),
-                      builder: (context, data) {
-                        if (data.hasData)
-                          return Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 30.0, bottom: 10, left: 8),
-                                  child: Text(
-                                    "Top Songs",
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      color: accent,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                //List of songs
-                              ],
-                            ),
-                          );
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(35.0),
-                            child: CircularProgressIndicator(
-                              valueColor:
-                                  new AlwaysStoppedAnimation<Color>(accent),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                  : Container()
             ],
           ),
         ),

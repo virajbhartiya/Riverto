@@ -1,10 +1,8 @@
 import 'package:Riverto/Models/formConstructor.dart';
 import 'package:Riverto/Models/formController.dart';
 import 'package:Riverto/style/appColors.dart';
-import 'package:Riverto/ui/homePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fluttertoast/fluttertoast.dart';

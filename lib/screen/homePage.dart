@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:Riverto/Models/recentlyPlayed.dart';
-import 'package:Riverto/ui/recentlyPlayedScreen.dart';
+import 'package:Riverto/screen/recentlyPlayedScreen.dart';
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -19,7 +19,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:Riverto/API/saavn.dart';
 import 'package:Riverto/music.dart';
 import 'package:Riverto/style/appColors.dart';
-import 'package:Riverto/ui/feedback.dart';
+import 'package:Riverto/screen/feedback.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:Riverto/const.dart';
@@ -81,19 +81,18 @@ class AppState extends State<Riverto> {
   getSongDetails(String id, var context) async {
     try {
       await fetchSongDetails(id);
-      print("before");
       RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
         ..title = title
         ..url = kUrl
         ..album = album
         ..artist = artist
         ..lyrics = lyrics
-        ..image = image;
+        ..image = image
+        ..id = id;
 
       // recentSongs.add(recentlyPlayed);
       await Const.insertDog(recentlyPlayed);
-      print((await Const.recentlyPlayedList())[0].title);
-      // print(recentSongs[3].url);
+      Const.change();
     } catch (e) {
       artist = "Unknown";
     }
@@ -126,7 +125,7 @@ class AppState extends State<Riverto> {
     var status = await Permission.storage.status;
     if (status.isUndetermined || status.isDenied) {
       //Getting permissions
-      Map<Permission, PermissionStatus> statuses = await [
+      await [
         Permission.storage,
       ].request();
     }
