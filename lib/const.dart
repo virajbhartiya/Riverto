@@ -34,7 +34,6 @@ class Const {
 
   static Future<void> insertDog(RecentlyPlayed recent) async {
     final Database db = await database;
-
     await db.insert(
       'recent',
       recent.toMap(),
