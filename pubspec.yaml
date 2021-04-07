@@ -52,6 +52,6 @@ flutter:
   fonts:
     - family: Less
       fonts:
-        - asset: fonts/Less.ttf
-        - asset: fonts/Less-Light.ttf
-        - asset: fonts/DMSans-Bold.ttf
+        - asset: fonts/Less.otf
+        - asset: fonts/Less-Light.otf
+        - asset: fonts/DMSans-Bold.otf
