@@ -561,27 +561,35 @@ class AppState extends State<Riverto> {
                                     ),
                                   ),
                                 ),
-                                //List of songs
-                                SingleChildScrollView(
-                                  child: Container(
-                                    //padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.30,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: 30,
-                                      itemBuilder: (context, index) {
-                                        return getTopSong(
-                                            data.data[index]["image"],
-                                            data.data[index]["title"],
-                                            data.data[index]["more_info"]
-                                                    ["artistMap"]
-                                                ["primary_artists"][0]["name"],
-                                            data.data[index]["id"]);
-                                      },
+                                Container(
+                                  child: SingleChildScrollView(
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height -
+                                              250,
+                                      child: SafeArea(
+                                        child: GridView.count(
+                                          crossAxisCount: 2,
+                                          children: List.generate(
+                                            28,
+                                            (index) {
+                                              return getTopSong(
+                                                data.data[index]["image"],
+                                                data.data[index]["title"],
+                                                data.data[index]["more_info"]
+                                                            ["artistMap"]
+                                                        ["primary_artists"][0]
+                                                    ["name"],
+                                                data.data[index]["id"],
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
+                                // SizedBox(height: 20),
                               ],
                             ),
                           );
