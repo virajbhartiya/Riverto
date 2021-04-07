@@ -21,9 +21,6 @@ import 'package:progress_dialog/progress_dialog.dart';
 import '../music.dart';
 import 'feedback.dart';
 
-//TODO: rmeove add to recently played
-//TODO:add list items as per song list
-
 class RecentlyPlayedScreen extends StatefulWidget {
   @override
   _RecentlyPlayedScreenState createState() => _RecentlyPlayedScreenState();
