@@ -305,7 +305,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10.0),
                       child: GradientText(
-                        "Riverto.",
+                        "Recent.",
                         shaderRect: Rect.fromLTWH(13.0, 0.0, 100.0, 50.0),
                         gradient: LinearGradient(colors: [
                           Color(0xff4db6ac),
