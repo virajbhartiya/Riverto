@@ -1,7 +1,7 @@
 import 'package:Riverto/signIn.dart';
 import 'package:flutter/material.dart';
 import 'package:Riverto/style/appColors.dart';
-import 'package:Riverto/ui/homePage.dart';
+import 'package:Riverto/screen/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'const.dart';

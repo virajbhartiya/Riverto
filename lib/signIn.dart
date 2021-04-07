@@ -1,5 +1,5 @@
 import 'package:Riverto/style/appColors.dart';
-import 'package:Riverto/ui/homePage.dart';
+import 'package:Riverto/screen/homePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
