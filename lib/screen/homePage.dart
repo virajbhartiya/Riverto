@@ -82,7 +82,7 @@ class AppState extends State<Riverto> {
         ..id = id;
 
       // recentSongs.add(recentlyPlayed);
-      await Const.insertDog(recentlyPlayed);
+      await Const.insertRecent(recentlyPlayed);
       Const.change();
     } catch (e) {
       artist = "Unknown";

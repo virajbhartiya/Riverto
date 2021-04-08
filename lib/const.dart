@@ -149,7 +149,7 @@ class Const {
     WidgetsFlutterBinding.ensureInitialized();
 
     database = openDatabase(
-      join(await getDatabasesPath(), 'recentlyPlayed.db'),
+      join(await getDatabasesPath(), 'recentlyPlayed'),
       onCreate: (db, version) {
         return db.execute(
           "CREATE TABLE recent(title TEXT PRIMARY KEY, url TEXT,image TEXT,album TEXT,artist TEXT,lyrics TEXT,id TEXT)",
@@ -159,7 +159,7 @@ class Const {
     );
   }
 
-  static Future<void> insertDog(RecentlyPlayed recent) async {
+  static Future<void> insertRecent(RecentlyPlayed recent) async {
     final Database db = await database;
     await db.insert(
       'recent',
@@ -204,4 +204,5 @@ class Const {
   }
 
   static List<RecentlyPlayed> recentSongs = [];
+  static List<RecentlyPlayed> queueSongs = [];
 }
