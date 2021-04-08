@@ -4,6 +4,7 @@ import 'package:Riverto/widgets/particle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/services.dart';
 import 'Models/formConstructor.dart';
 import 'Models/formController.dart';
 import 'const.dart';
@@ -20,6 +21,15 @@ class _SignInState extends State<SignIn> {
   TextEditingController email = new TextEditingController();
 
   GlobalKey<FormState> key = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.black,
+      statusBarColor: Colors.transparent,
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -6,6 +6,7 @@ import 'package:Riverto/screen/queueScreen.dart';
 import 'package:Riverto/screen/recentlyPlayedScreen.dart';
 import 'package:Riverto/widgets/particle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:des_plugin/des_plugin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -73,6 +74,7 @@ class AppState extends State<Riverto> {
     setState(() {
       fetchingSongs = false;
     });
+    print(searchedList);
   }
 
   getSongDetails(String id, var context) async {
@@ -106,23 +108,74 @@ class AppState extends State<Riverto> {
 
   @override
   Widget build(BuildContext context) {
-    String lyr;
-    Future fetchLyrics(art, tit) async {
-      String lyricsApiUrl =
-          "https://sumanjay.vercel.app/lyrics/" + art + "/" + tit;
-      var lyricsApiRes =
-          await http.get(lyricsApiUrl, headers: {"Accept": "application/json"});
-      var lyricsResponse = json.decode(lyricsApiRes.body);
-      if (lyricsResponse['status'] == true &&
-          lyricsResponse['lyrics'] != null) {
-        setState(() {
-          lyr = lyricsResponse['lyrics'];
-        });
-      } else {
-        setState(() {
-          lyr = "null";
-        });
+    String lyr, url, raw;
+    Future fetchLyrics(id, art, tit) async {
+      String songUrl =
+          "https://www.jiosaavn.com/api.php?app_version=5.18.3&api_version=4&readable_version=5.18.3&v=79&_format=json&__call=song.getDetails&pids=" +
+              id;
+      var res =
+          await http.get(songUrl, headers: {"Accept": "application/json"});
+      var resEdited = (res.body).split("-->");
+      var getMain = json.decode(resEdited[1]);
+
+      title = (getMain[id]["title"])
+          .toString()
+          .split("(")[0]
+          .replaceAll("&amp;", "&")
+          .replaceAll("&#039;", "'")
+          .replaceAll("&quot;", "\"");
+      image = (getMain[id]["image"]).replaceAll("150x150", "500x500");
+      album = (getMain[id]["more_info"]["album"])
+          .toString()
+          .replaceAll("&quot;", "\"")
+          .replaceAll("&#039;", "'")
+          .replaceAll("&amp;", "&");
+
+      try {
+        artist =
+            getMain[id]['more_info']['artistMap']['primary_artists'][0]['name'];
+      } catch (e) {
+        artist = "-";
       }
+      if (getMain[id]["more_info"]["has_lyrics"] == "true") {
+        String lyricsUrl =
+            "https://www.jiosaavn.com/api.php?__call=lyrics.getLyrics&lyrics_id=" +
+                id +
+                "&ctx=web6dot0&api_version=4&_format=json";
+        var lyricsRes =
+            await http.get(lyricsUrl, headers: {"Accept": "application/json"});
+        var lyricsEdited = (lyricsRes.body).split("-->");
+        var fetchedLyrics = json.decode(lyricsEdited[1]);
+        lyr = fetchedLyrics["lyrics"].toString().replaceAll("<br>", "\n");
+      } else {
+        lyr = "null";
+        String lyricsApiUrl =
+            "https://sumanjay.vercel.app/lyrics/" + artist + "/" + title;
+        var lyricsApiRes = await http
+            .get(lyricsApiUrl, headers: {"Accept": "application/json"});
+        var lyricsResponse = json.decode(lyricsApiRes.body);
+        if (lyricsResponse['status'] == true &&
+            lyricsResponse['lyrics'] != null) {
+          lyr = lyricsResponse['lyrics'];
+        }
+      }
+
+      url = await DesPlugin.decrypt(
+          key, getMain[id]["more_info"]["encrypted_media_url"]);
+
+      raw = url;
+
+      final client = http.Client();
+      final request = http.Request('HEAD', Uri.parse(url))
+        ..followRedirects = false;
+      final response = await client.send(request);
+      url = (response.headers['location']);
+      artist = (getMain[id]["more_info"]["artistMap"]["primary_artists"][0]
+              ["name"])
+          .toString()
+          .replaceAll("&quot;", "\"")
+          .replaceAll("&#039;", "'")
+          .replaceAll("&amp;", "&");
     }
 
     return Container(
@@ -442,6 +495,7 @@ class AppState extends State<Riverto> {
                                           icon: Icon(MdiIcons.apacheKafka),
                                           onPressed: () async {
                                             await fetchLyrics(
+                                                    searchedList[index]["id"],
                                                     searchedList[index]
                                                             ['more_info']
                                                         ["singers"],
@@ -460,7 +514,9 @@ class AppState extends State<Riverto> {
                                                       ['more_info']["singers"]
                                                   ..id =
                                                       searchedList[index]["id"]
-                                                  ..lyrics = lyr;
+                                                  ..lyrics = lyr
+                                                  ..url = url;
+
                                             Const.queueSongs.add(queueItem);
                                           },
                                         ),

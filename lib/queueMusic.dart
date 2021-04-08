@@ -48,7 +48,9 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
   @override
   void initState() {
     super.initState();
+    print("hello");
     index = widget.index;
+    print(widget.songs[index].url);
     setState(() {});
     initAudioPlayer();
   }
@@ -117,12 +119,12 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
     setState(() {
       playerState = PlayerState.playing;
     });
-    audioPlayer.play(kUrl);
+    audioPlayer.play(widget.songs[index].url);
     play();
   }
 
   Future play() async {
-    await audioPlayer.play(kUrl);
+    await audioPlayer.play(widget.songs[index].url);
     MediaNotification.showNotification(
         title: widget.songs[index].title,
         author: widget.songs[index].artist,

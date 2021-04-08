@@ -38,6 +38,12 @@ class _QueueScreenState extends State<QueueScreen> {
     setState(() {
       checker = "yes";
     });
+    kUrl = songs[index].url;
+    // image = songs[index].image;
+    title = songs[index].title;
+    album = songs[index].album;
+    artist = songs[index].artist;
+    lyrics = songs[index].lyrics;
     Navigator.push(
       context,
       MaterialPageRoute(
