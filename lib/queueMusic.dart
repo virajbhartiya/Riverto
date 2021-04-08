@@ -229,11 +229,6 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                             children: <Widget>[
                               Text(
                                 widget.songs[index].title,
-                                // shaderRect: Rect.fromLTWH(13.0, 0.0, 100.0, 50.0),
-                                // gradient: LinearGradient(colors: [
-                                //   Color(0xff4db6ac),
-                                //   Color(0xff61e88a),
-                                // ]),
                                 textScaleFactor: 2.5,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -464,21 +459,6 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                                                         ),
                                                       )),
                                                 )
-                                                // : Padding(
-                                                //     padding:
-                                                //         const EdgeInsets.only(
-                                                //             top: 120.0),
-                                                //     child: Center(
-                                                //       child: Container(
-                                                //         child: Text(
-                                                //           "No Lyrics available ;(",
-                                                //           style: TextStyle(
-                                                //               color: accentLight,
-                                                //               fontSize: 25),
-                                                //         ),
-                                                //       ),
-                                                //     ),
-                                                //   ),
                                               ],
                                             ),
                                           ));
