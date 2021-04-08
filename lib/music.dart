@@ -308,6 +308,7 @@ class AudioAppState extends State<AudioApp> {
                           : Container()
                     ],
                   ),
+                  lyrics != "null"?
                   Padding(
                     padding: const EdgeInsets.only(top: 20.0),
                     child: Builder(builder: (context) {
@@ -366,8 +367,9 @@ class AudioAppState extends State<AudioApp> {
                                               ],
                                             ),
                                           ),
-                                          lyrics != "null"
-                                              ? Expanded(
+                                          // lyrics != "null"
+                                          //     ? 
+                                              Expanded(
                                                   flex: 1,
                                                   child: Padding(
                                                       padding:
@@ -389,21 +391,21 @@ class AudioAppState extends State<AudioApp> {
                                                         ),
                                                       )),
                                                 )
-                                              : Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 120.0),
-                                                  child: Center(
-                                                    child: Container(
-                                                      child: Text(
-                                                        "No Lyrics available ;(",
-                                                        style: TextStyle(
-                                                            color: accentLight,
-                                                            fontSize: 25),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
+                                              // : Padding(
+                                              //     padding:
+                                              //         const EdgeInsets.only(
+                                              //             top: 120.0),
+                                              //     child: Center(
+                                              //       child: Container(
+                                              //         child: Text(
+                                              //           "No Lyrics available ;(",
+                                              //           style: TextStyle(
+                                              //               color: accentLight,
+                                              //               fontSize: 25),
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //   ),
                                         ],
                                       ),
                                     ));
@@ -422,7 +424,7 @@ class AudioAppState extends State<AudioApp> {
                             ),
                           ));
                     }),
-                  )
+                  ): Container()
                 ],
               ),
             ),
