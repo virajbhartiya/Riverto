@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../music.dart';
-import 'feedback.dart';
 import 'package:flutter_particles/particles.dart';
 
 class RecentlyPlayedScreen extends StatefulWidget {
@@ -57,10 +56,11 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                 height: 75,
                 //color: Color(0xff1c252a),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        topRight: Radius.circular(18)),
-                    color: Color(0xff1c252a)),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(18),
+                      topRight: Radius.circular(18)),
+                  color: Colors.black,
+                ),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 5.0, bottom: 2),
                   child: GestureDetector(
@@ -85,7 +85,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                               size: 22,
                             ),
                             onPressed: null,
-                            disabledColor: accent,
+                            disabledColor: Colors.black,
                           ),
                         ),
                         Padding(

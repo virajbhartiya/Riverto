@@ -7,7 +7,7 @@ import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:Riverto/style/appColors.dart';
-
+import 'package:flutter_particles/particles.dart';
 import 'API/saavn.dart';
 
 String status = 'hidden';
@@ -144,18 +144,7 @@ class AudioAppState extends State<AudioApp> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xff384850),
-            Color(0xff263238),
-            Color(0xff263238),
-            //Color(0xff61e88a),
-          ],
-        ),
-      ),
+      color: Colors.black,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -164,13 +153,8 @@ class AudioAppState extends State<AudioApp> {
           elevation: 0,
           //backgroundColor: Color(0xff384850),
           centerTitle: true,
-          title: GradientText(
+          title: Text(
             "Now Playing",
-            shaderRect: Rect.fromLTWH(13.0, 0.0, 100.0, 50.0),
-            gradient: LinearGradient(colors: [
-              Color(0xff4db6ac),
-              Color(0xff61e88a),
-            ]),
             style: TextStyle(
               color: accent,
               fontSize: 25,
@@ -189,60 +173,79 @@ class AudioAppState extends State<AudioApp> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 250,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    shape: BoxShape.rectangle,
-                    image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: CachedNetworkImageProvider(image),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0, bottom: 15),
-                  child: Column(
-                    children: <Widget>[
-                      GradientText(
-                        title,
-                        shaderRect: Rect.fromLTWH(13.0, 0.0, 100.0, 50.0),
-                        gradient: LinearGradient(colors: [
-                          Color(0xff4db6ac),
-                          Color(0xff61e88a),
-                        ]),
-                        textScaleFactor: 2.5,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w700),
+        body: Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              child: new Particles(
+                20, // Number of Particles
+                Color(0xff61e88a), // Color of Particles
+              ),
+            ),
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 250,
+                      height: 250,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        shape: BoxShape.rectangle,
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: CachedNetworkImageProvider(image),
+                        ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 0.0),
-                        child: Text(
-                          album + "  |  " + artist,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: accentLight,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: Container(
+                        color: Colors.black,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 15.0, bottom: 15),
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                title,
+                                // shaderRect: Rect.fromLTWH(13.0, 0.0, 100.0, 50.0),
+                                // gradient: LinearGradient(colors: [
+                                //   Color(0xff4db6ac),
+                                //   Color(0xff61e88a),
+                                // ]),
+                                textScaleFactor: 2.5,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: accent,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 0.0),
+                                child: Text(
+                                  album + "  |  " + artist,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: accentLight,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    Material(child: _buildPlayer()),
+                  ],
                 ),
-                Material(child: _buildPlayer()),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -277,13 +280,7 @@ class AudioAppState extends State<AudioApp> {
                           ? Container()
                           : Container(
                               decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xff4db6ac),
-                                      //Color(0xff00c754),
-                                      Color(0xff61e88a),
-                                    ],
-                                  ),
+                                  color: accent,
                                   borderRadius: BorderRadius.circular(100)),
                               child: IconButton(
                                 onPressed: isPlaying ? null : () => play(),
@@ -298,13 +295,7 @@ class AudioAppState extends State<AudioApp> {
                       isPlaying
                           ? Container(
                               decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xff4db6ac),
-                                      //Color(0xff00c754),
-                                      Color(0xff61e88a),
-                                    ],
-                                  ),
+                                  color: accent,
                                   borderRadius: BorderRadius.circular(100)),
                               child: IconButton(
                                 onPressed: isPlaying ? () => pause() : null,
@@ -416,9 +407,18 @@ class AudioAppState extends State<AudioApp> {
                                       ),
                                     ));
                           },
-                          child: Text(
-                            "Lyrics",
-                            style: TextStyle(color: accent),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(25),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
+                              color: Colors.black,
+                              child: Text(
+                                "Lyrics",
+                                style:
+                                    TextStyle(color: accent, letterSpacing: 3),
+                              ),
+                            ),
                           ));
                     }),
                   )
