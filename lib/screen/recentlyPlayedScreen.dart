@@ -29,9 +29,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
 
   getSongDetails(String id) async {
     try {
-      print(title);
       await fetchSongDetails(id);
-      print(title);
     } catch (e) {
       artist = "Unknown";
     }
