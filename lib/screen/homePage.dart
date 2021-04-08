@@ -120,108 +120,108 @@ class AppState extends State<Riverto> {
     );
   }
 
-  downloadSong(id) async {
-    String filepath;
-    String filepath2;
-    var status = await Permission.storage.status;
-    if (status.isUndetermined || status.isDenied) {
-      //Getting permissions
-      await [
-        Permission.storage,
-      ].request();
-    }
-    status = await Permission.storage.status;
-    await fetchSongDetails(id);
-    if (status.isGranted) {
-      ProgressDialog pr = ProgressDialog(context);
-      pr = ProgressDialog(
-        context,
-        type: ProgressDialogType.Normal,
-        isDismissible: false,
-        showLogs: false,
-      );
+  // downloadSong(id) async {
+  //   String filepath;
+  //   String filepath2;
+  //   var status = await Permission.storage.status;
+  //   if (status.isUndetermined || status.isDenied) {
+  //     //Getting permissions
+  //     await [
+  //       Permission.storage,
+  //     ].request();
+  //   }
+  //   status = await Permission.storage.status;
+  //   await fetchSongDetails(id);
+  //   if (status.isGranted) {
+  //     ProgressDialog pr = ProgressDialog(context);
+  //     pr = ProgressDialog(
+  //       context,
+  //       type: ProgressDialogType.Normal,
+  //       isDismissible: false,
+  //       showLogs: false,
+  //     );
 
-      pr.style(
-        backgroundColor: Color(0xff263238),
-        elevation: 4,
-        textAlign: TextAlign.left,
-        progressTextStyle: TextStyle(color: Colors.white),
-        message: "Downloading " + title,
-        messageTextStyle: TextStyle(color: accent),
-        progressWidget: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(accent),
-          ),
-        ),
-      );
-      await pr.show();
+  //     pr.style(
+  //       backgroundColor: Color(0xff263238),
+  //       elevation: 4,
+  //       textAlign: TextAlign.left,
+  //       progressTextStyle: TextStyle(color: Colors.white),
+  //       message: "Downloading " + title,
+  //       messageTextStyle: TextStyle(color: accent),
+  //       progressWidget: Padding(
+  //         padding: const EdgeInsets.all(20.0),
+  //         child: CircularProgressIndicator(
+  //           valueColor: AlwaysStoppedAnimation<Color>(accent),
+  //         ),
+  //       ),
+  //     );
+  //     await pr.show();
 
-      final filename = title + ".m4a";
-      final artname = title + "_artwork.jpg";
+  //     final filename = title + ".m4a";
+  //     final artname = title + "_artwork.jpg";
 
-      //Path for saving the song
-      String dlPath = await ExtStorage.getExternalStoragePublicDirectory(
-          ExtStorage.DIRECTORY_MUSIC);
-      await File(dlPath + "/" + filename)
-          .create(recursive: true)
-          .then((value) => filepath = value.path);
-      await File(dlPath + "/" + artname)
-          .create(recursive: true)
-          .then((value) => filepath2 = value.path);
+  //     //Path for saving the song
+  //     String dlPath = await ExtStorage.getExternalStoragePublicDirectory(
+  //         ExtStorage.DIRECTORY_MUSIC);
+  //     await File(dlPath + "/" + filename)
+  //         .create(recursive: true)
+  //         .then((value) => filepath = value.path);
+  //     await File(dlPath + "/" + artname)
+  //         .create(recursive: true)
+  //         .then((value) => filepath2 = value.path);
 
-      if (has_320 == "true") {
-        kUrl = rawkUrl.replaceAll("_96.mp4", "_320.mp4");
-        final client = http.Client();
-        final request = http.Request('HEAD', Uri.parse(kUrl))
-          ..followRedirects = false;
-        final response = await client.send(request);
-        kUrl = (response.headers['location']);
-        final request2 = http.Request('HEAD', Uri.parse(kUrl))
-          ..followRedirects = false;
-        final response2 = await client.send(request2);
-        if (response2.statusCode != 200) {
-          kUrl = kUrl.replaceAll(".mp4", ".mp3");
-        }
-      }
-      var request = await HttpClient().getUrl(Uri.parse(kUrl));
-      var response = await request.close();
-      var bytes = await consolidateHttpClientResponseBytes(response);
-      File file = File(filepath);
+  //     if (has_320 == "true") {
+  //       kUrl = rawkUrl.replaceAll("_96.mp4", "_320.mp4");
+  //       final client = http.Client();
+  //       final request = http.Request('HEAD', Uri.parse(kUrl))
+  //         ..followRedirects = false;
+  //       final response = await client.send(request);
+  //       kUrl = (response.headers['location']);
+  //       final request2 = http.Request('HEAD', Uri.parse(kUrl))
+  //         ..followRedirects = false;
+  //       final response2 = await client.send(request2);
+  //       if (response2.statusCode != 200) {
+  //         kUrl = kUrl.replaceAll(".mp4", ".mp3");
+  //       }
+  //     }
+  //     var request = await HttpClient().getUrl(Uri.parse(kUrl));
+  //     var response = await request.close();
+  //     var bytes = await consolidateHttpClientResponseBytes(response);
+  //     File file = File(filepath);
 
-      var request2 = await HttpClient().getUrl(Uri.parse(image));
-      var response2 = await request2.close();
-      var bytes2 = await consolidateHttpClientResponseBytes(response2);
-      File file2 = File(filepath2);
+  //     var request2 = await HttpClient().getUrl(Uri.parse(image));
+  //     var response2 = await request2.close();
+  //     var bytes2 = await consolidateHttpClientResponseBytes(response2);
+  //     File file2 = File(filepath2);
 
-      await file.writeAsBytes(bytes);
-      await file2.writeAsBytes(bytes2);
+  //     await file.writeAsBytes(bytes);
+  //     await file2.writeAsBytes(bytes2);
 
-      final tag = Tag(
-        title: title,
-        artist: artist,
-        artwork: filepath2,
-        album: album,
-        lyrics: lyrics,
-        genre: null,
-      );
+  //     final tag = Tag(
+  //       title: title,
+  //       artist: artist,
+  //       artwork: filepath2,
+  //       album: album,
+  //       lyrics: lyrics,
+  //       genre: null,
+  //     );
 
-      final tagger = Audiotagger();
-      await tagger.writeTags(
-        path: filepath,
-        tag: tag,
-      );
-      await Future.delayed(const Duration(seconds: 1), () {});
-      await pr.hide();
+  //     final tagger = Audiotagger();
+  //     await tagger.writeTags(
+  //       path: filepath,
+  //       tag: tag,
+  //     );
+  //     await Future.delayed(const Duration(seconds: 1), () {});
+  //     await pr.hide();
 
-      if (await file2.exists()) await file2.delete();
+  //     if (await file2.exists()) await file2.delete();
 
-      toast("Download Complete!");
-    } else if (status.isDenied || status.isPermanentlyDenied)
-      toast("Storage Permission Denied!\nCan't Download Songs");
-    else
-      toast("Permission Error!");
-  }
+  //     toast("Download Complete!");
+  //   } else if (status.isDenied || status.isPermanentlyDenied)
+  //     toast("Storage Permission Denied!\nCan't Download Songs");
+  //   else
+  //     toast("Permission Error!");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -545,7 +545,7 @@ class AppState extends State<Riverto> {
                                           icon: Icon(MdiIcons.downloadOutline),
                                           onPressed: () async {
                                             toast("Starting Download!");
-                                            downloadSong(
+                                            Const.downloadSong(
                                               searchedList[index]["id"],
                                             );
                                           },
