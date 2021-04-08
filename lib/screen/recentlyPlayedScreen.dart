@@ -6,8 +6,6 @@ import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../music.dart';
 import 'feedback.dart';
@@ -28,13 +26,6 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
     ));
 
     Const.change();
-    if (Const.recentSongs != null) {
-      Const.recentSongs
-          .getRange(0, Const.recentSongs.length)
-          .forEach((element) {
-        print(element.id);
-      });
-    }
   }
 
   getSongDetails(String id) async {
@@ -184,37 +175,17 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10.0),
-                          child: GradientText(
+                          child: Text(
                             "Recent.",
-                            shaderRect: Rect.fromLTWH(13.0, 0.0, 100.0, 50.0),
-                            gradient: LinearGradient(colors: [
-                              Color(0xff4db6ac),
-                              Color(0xff61e88a),
-                            ]),
                             style: TextStyle(
+                              color: Color(0xff61e88a),
                               fontSize: 45,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
                         ),
                       ),
-                      //feedback button
-                      Container(
-                        child: IconButton(
-                          iconSize: 26,
-                          alignment: Alignment.center,
-                          icon: Icon(MdiIcons.messageOutline),
-                          color: accent,
-                          onPressed: () => {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => Feed(),
-                              ),
-                            ),
-                          },
-                        ),
-                      ),
+
                       //recentlyPlayed button
                     ]),
                   ),

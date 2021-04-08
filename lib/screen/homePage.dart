@@ -235,14 +235,10 @@ class AppState extends State<Riverto> {
                                 topRight: Radius.circular(20),
                                 bottomLeft: Radius.circular(20),
                                 bottomRight: Radius.circular(20)),
-                            child: GradientText(
+                            child: Text(
                               "Riverto.",
-                              shaderRect: Rect.fromLTWH(13.0, 0.0, 100.0, 50.0),
-                              gradient: LinearGradient(colors: [
-                                Color(0xff4db6ac),
-                                Color(0xff61e88a),
-                              ]),
                               style: TextStyle(
+                                color: Color(0xff61e88a),
                                 fontSize: 45,
                                 fontWeight: FontWeight.w800,
                               ),
