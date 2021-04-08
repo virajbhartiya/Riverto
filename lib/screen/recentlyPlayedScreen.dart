@@ -1,6 +1,7 @@
 import 'package:Riverto/API/saavn.dart';
 import 'package:Riverto/const.dart';
 import 'package:Riverto/style/appColors.dart';
+import 'package:Riverto/widgets/particle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
@@ -156,13 +157,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
             : SizedBox.shrink(),
         body: Stack(
           children: [
-            Container(
-              height: MediaQuery.of(context).size.height,
-              child: new Particles(
-                20, // Number of Particles
-                Color(0xff61e88a), // Color of Particles
-              ),
-            ),
+            particle(context),
             SingleChildScrollView(
               padding: EdgeInsets.all(12.0),
               child: Column(

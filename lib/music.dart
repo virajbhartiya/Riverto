@@ -1,10 +1,9 @@
 import 'dart:async';
-
+import 'package:Riverto/widgets/particle.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
-import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:Riverto/style/appColors.dart';
 import 'package:flutter_particles/particles.dart';
@@ -176,13 +175,7 @@ class AudioAppState extends State<AudioApp> {
         ),
         body: Stack(
           children: [
-            Container(
-              height: MediaQuery.of(context).size.height,
-              child: new Particles(
-                20, // Number of Particles
-                Color(0xff61e88a), // Color of Particles
-              ),
-            ),
+            particle(context),
             SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.only(top: 15.0),
@@ -308,68 +301,75 @@ class AudioAppState extends State<AudioApp> {
                           : Container()
                     ],
                   ),
-                  lyrics != "null"?
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Builder(builder: (context) {
-                      return FlatButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0)),
-                          color: Colors.black12,
-                          onPressed: () {
-                            showBottomSheet(
-                                context: context,
-                                builder: (context) => Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.only(
-                                              topLeft:
-                                                  const Radius.circular(18.0),
-                                              topRight:
-                                                  const Radius.circular(18.0))),
-                                      height: 400,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 10.0),
-                                            child: Row(
+                  lyrics != "null"
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Builder(builder: (context) {
+                            return FlatButton(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0)),
+                                color: Colors.black12,
+                                onPressed: () {
+                                  showBottomSheet(
+                                      context: context,
+                                      builder: (context) => Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        const Radius.circular(
+                                                            18.0),
+                                                    topRight:
+                                                        const Radius.circular(
+                                                            18.0))),
+                                            height: 400,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
                                               children: <Widget>[
-                                                IconButton(
-                                                    icon: Icon(
-                                                      Icons.arrow_back_ios,
-                                                      color: accent,
-                                                      size: 20,
-                                                    ),
-                                                    onPressed: () => {
-                                                          Navigator.pop(context)
-                                                        }),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 42.0),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "Lyrics",
-                                                        style: TextStyle(
-                                                          color: accent,
-                                                          fontSize: 30,
-                                                          fontWeight:
-                                                              FontWeight.w500,
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 10.0),
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      IconButton(
+                                                          icon: Icon(
+                                                            Icons
+                                                                .arrow_back_ios,
+                                                            color: accent,
+                                                            size: 20,
+                                                          ),
+                                                          onPressed: () => {
+                                                                Navigator.pop(
+                                                                    context)
+                                                              }),
+                                                      Expanded(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 42.0),
+                                                          child: Center(
+                                                            child: Text(
+                                                              "Lyrics",
+                                                              style: TextStyle(
+                                                                color: accent,
+                                                                fontSize: 30,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                          // lyrics != "null"
-                                          //     ? 
-                                              Expanded(
+                                                // lyrics != "null"
+                                                //     ?
+                                                Expanded(
                                                   flex: 1,
                                                   child: Padding(
                                                       padding:
@@ -391,40 +391,41 @@ class AudioAppState extends State<AudioApp> {
                                                         ),
                                                       )),
                                                 )
-                                              // : Padding(
-                                              //     padding:
-                                              //         const EdgeInsets.only(
-                                              //             top: 120.0),
-                                              //     child: Center(
-                                              //       child: Container(
-                                              //         child: Text(
-                                              //           "No Lyrics available ;(",
-                                              //           style: TextStyle(
-                                              //               color: accentLight,
-                                              //               fontSize: 25),
-                                              //         ),
-                                              //       ),
-                                              //     ),
-                                              //   ),
-                                        ],
-                                      ),
-                                    ));
-                          },
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10),
-                              color: Colors.black,
-                              child: Text(
-                                "Lyrics",
-                                style:
-                                    TextStyle(color: accent, letterSpacing: 3),
-                              ),
-                            ),
-                          ));
-                    }),
-                  ): Container()
+                                                // : Padding(
+                                                //     padding:
+                                                //         const EdgeInsets.only(
+                                                //             top: 120.0),
+                                                //     child: Center(
+                                                //       child: Container(
+                                                //         child: Text(
+                                                //           "No Lyrics available ;(",
+                                                //           style: TextStyle(
+                                                //               color: accentLight,
+                                                //               fontSize: 25),
+                                                //         ),
+                                                //       ),
+                                                //     ),
+                                                //   ),
+                                              ],
+                                            ),
+                                          ));
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(25),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10),
+                                    color: Colors.black,
+                                    child: Text(
+                                      "Lyrics",
+                                      style: TextStyle(
+                                          color: accent, letterSpacing: 3),
+                                    ),
+                                  ),
+                                ));
+                          }),
+                        )
+                      : Container()
                 ],
               ),
             ),
