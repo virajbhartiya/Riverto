@@ -213,7 +213,7 @@ class AppState extends State<Riverto> {
           children: [
             particle(context),
             SingleChildScrollView(
-              padding: EdgeInsets.all(12.0),
+              padding: EdgeInsets.symmetric(horizontal: 12.0),
               child: Column(
                 children: <Widget>[
                   Padding(padding: EdgeInsets.only(top: 30, bottom: 20.0)),
