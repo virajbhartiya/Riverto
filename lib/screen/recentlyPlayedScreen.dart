@@ -2,16 +2,13 @@ import 'package:Riverto/API/saavn.dart';
 import 'package:Riverto/const.dart';
 import 'package:Riverto/style/appColors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:flutter/cupertino.dart';
-
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
 import '../music.dart';
 import 'feedback.dart';
 import 'package:flutter_particles/particles.dart';
@@ -59,32 +56,9 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
     );
   }
 
-  toast(String msg) {
-    Fluttertoast.showToast(
-      msg: msg,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.black,
-      textColor: Color(0xff61e88a),
-      fontSize: 14.0,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      // decoration: BoxDecoration(
-      //   gradient: LinearGradient(
-      //     begin: Alignment.topCenter,
-      //     end: Alignment.bottomCenter,
-      //     colors: [
-      //       Color(0xff384850),
-      //       Color(0xff263238),
-      //       Color(0xff263238),
-      //     ],
-      //   ),
-      // ),
       child: Scaffold(
         backgroundColor: Colors.black,
         bottomNavigationBar: kUrl != ""
@@ -302,7 +276,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                           color: accent,
                                           icon: Icon(MdiIcons.downloadOutline),
                                           onPressed: () async {
-                                            toast("Starting Download!");
+                                            Const.toast("Starting Download!");
                                             Const.downloadSong(
                                                 Const.recentSongs[index].id,
                                                 context);
