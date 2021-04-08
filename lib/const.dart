@@ -1,3 +1,4 @@
+import 'package:Riverto/Models/queueModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -204,5 +205,5 @@ class Const {
   }
 
   static List<RecentlyPlayed> recentSongs = [];
-  static List<RecentlyPlayed> queueSongs = [];
+  static List<QueueModel> queueSongs = [];
 }

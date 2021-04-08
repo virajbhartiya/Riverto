@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:ui';
+import 'package:Riverto/Models/queueModel.dart';
 import 'package:Riverto/Models/recentlyPlayed.dart';
+import 'package:Riverto/screen/queueScreen.dart';
 import 'package:Riverto/screen/recentlyPlayedScreen.dart';
 import 'package:Riverto/widgets/particle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,8 +16,9 @@ import 'package:Riverto/music.dart';
 import 'package:Riverto/style/appColors.dart';
 import 'package:Riverto/screen/feedback.dart';
 import 'package:Riverto/const.dart';
-import 'package:flutter_particles/particles.dart';
+import 'package:http/http.dart' as http;
 
+//TODO: Next Song in queue
 class Riverto extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -100,6 +104,45 @@ class AppState extends State<Riverto> {
 
   @override
   Widget build(BuildContext context) {
+    String lyr;
+    Future fetchLyrics(songId) async {
+      String songUrl =
+          "https://www.jiosaavn.com/api.php?app_version=5.18.3&api_version=4&readable_version=5.18.3&v=79&_format=json&__call=song.getDetails&pids=" +
+              songId;
+      var res =
+          await http.get(songUrl, headers: {"Accept": "application/json"});
+      var resEdited = (res.body).split("-->");
+      var getMain = json.decode(resEdited[1]);
+      if (getMain[songId]["more_info"]["has_lyrics"] == "true") {
+        String lyricsUrl =
+            "https://www.jiosaavn.com/api.php?__call=lyrics.getLyrics&lyrics_id=" +
+                songId +
+                "&ctx=web6dot0&api_version=4&_format=json";
+        var lyricsRes =
+            await http.get(lyricsUrl, headers: {"Accept": "application/json"});
+        var lyricsEdited = (lyricsRes.body).split("-->");
+        var fetchedLyrics = json.decode(lyricsEdited[1]);
+        setState(() {
+          lyr = fetchedLyrics["lyrics"].toString().replaceAll("<br>", "\n");
+        });
+      } else {
+        setState(() {
+          lyr = "null";
+        });
+        String lyricsApiUrl =
+            "https://sumanjay.vercel.app/lyrics/" + artist + "/" + title;
+        var lyricsApiRes = await http
+            .get(lyricsApiUrl, headers: {"Accept": "application/json"});
+        var lyricsResponse = json.decode(lyricsApiRes.body);
+        if (lyricsResponse['status'] == true &&
+            lyricsResponse['lyrics'] != null) {
+          setState(() {
+            lyr = lyricsResponse['lyrics'];
+          });
+        }
+      }
+    }
+
     return Container(
       child: Scaffold(
         // resizeToAvoidBottomPadding: false,
@@ -272,6 +315,23 @@ class AppState extends State<Riverto> {
                             ),
                           },
                         ),
+                      ),
+                      //queue button
+                      Container(
+                        child: IconButton(
+                          iconSize: 26,
+                          alignment: Alignment.center,
+                          icon: Icon(MdiIcons.apacheKafka),
+                          color: accent,
+                          onPressed: () => {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => QueueScreen(),
+                              ),
+                            ),
+                          },
+                        ),
                       )
                     ]),
                   ),
@@ -365,36 +425,59 @@ class AppState extends State<Riverto> {
                                   hoverColor: accent,
                                   focusColor: accent,
                                   highlightColor: accent,
-                                  child: Column(
-                                    children: <Widget>[
-                                      ListTile(
-                                        leading: Padding(
-                                          padding: const EdgeInsets.all(.0),
-                                          child: Icon(
-                                            MdiIcons.musicNoteOutline,
-                                            size: 30,
-                                            color: accent,
-                                          ),
-                                          // Icon(
-                                          //   MdiIcons.musicNoteOutline,
-                                          //   size: 30,
-                                          //   color: accent,
-                                          // ),
+                                  child: ListTile(
+                                    leading: Padding(
+                                      padding: const EdgeInsets.all(.0),
+                                      child: Icon(
+                                        MdiIcons.musicNoteOutline,
+                                        size: 30,
+                                        color: accent,
+                                      ),
+                                      // Icon(
+                                      //   MdiIcons.musicNoteOutline,
+                                      //   size: 30,
+                                      //   color: accent,
+                                      // ),
+                                    ),
+                                    title: Text(
+                                      (searchedList[index]['title'])
+                                          .toString()
+                                          .split("(")[0]
+                                          .replaceAll("&quot;", "\"")
+                                          .replaceAll("&amp;", "&"),
+                                      style: TextStyle(color: accent),
+                                    ),
+                                    subtitle: Text(
+                                      searchedList[index]['more_info']
+                                          ["singers"],
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          color: accent,
+                                          icon: Icon(MdiIcons.apacheKafka),
+                                          onPressed: () async {
+                                            await fetchLyrics(
+                                                    searchedList[index]["id"])
+                                                .then((_) => {
+                                                      print(lyr),
+                                                    });
+                                            QueueModel queueItem =
+                                                new QueueModel()
+                                                  ..title = searchedList[index]
+                                                      ['title']
+                                                  ..album = album
+                                                  ..artist = searchedList[index]
+                                                      ['more_info']["singers"]
+                                                  ..id =
+                                                      searchedList[index]["id"]
+                                                  ..lyrics = lyr;
+                                            Const.queueSongs.add(queueItem);
+                                          },
                                         ),
-                                        title: Text(
-                                          (searchedList[index]['title'])
-                                              .toString()
-                                              .split("(")[0]
-                                              .replaceAll("&quot;", "\"")
-                                              .replaceAll("&amp;", "&"),
-                                          style: TextStyle(color: accent),
-                                        ),
-                                        subtitle: Text(
-                                          searchedList[index]['more_info']
-                                              ["singers"],
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        trailing: IconButton(
+                                        IconButton(
                                           color: accent,
                                           icon: Icon(MdiIcons.downloadOutline),
                                           onPressed: () async {
@@ -404,8 +487,8 @@ class AppState extends State<Riverto> {
                                                 context);
                                           },
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
