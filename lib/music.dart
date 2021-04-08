@@ -161,6 +161,7 @@ class AudioAppState extends State<AudioApp> {
               fontWeight: FontWeight.w700,
             ),
           ),
+
           leading: Padding(
             padding: const EdgeInsets.only(left: 14.0),
             child: IconButton(
@@ -319,7 +320,7 @@ class AudioAppState extends State<AudioApp> {
                                 context: context,
                                 builder: (context) => Container(
                                       decoration: BoxDecoration(
-                                          color: Color(0xff212c31),
+                                          color: Colors.black,
                                           borderRadius: BorderRadius.only(
                                               topLeft:
                                                   const Radius.circular(18.0),

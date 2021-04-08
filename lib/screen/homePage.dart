@@ -6,8 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:Riverto/API/saavn.dart';
 import 'package:Riverto/music.dart';
@@ -114,7 +112,7 @@ class AppState extends State<Riverto> {
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(18),
                         topRight: Radius.circular(18)),
-                    color: Color(0xff1c252a)),
+                    color: Colors.black),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 5.0, bottom: 2),
                   child: GestureDetector(

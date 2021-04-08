@@ -85,7 +85,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                               size: 22,
                             ),
                             onPressed: null,
-                            disabledColor: Colors.black,
+                            disabledColor: accent,
                           ),
                         ),
                         Padding(
