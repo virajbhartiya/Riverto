@@ -49,6 +49,7 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
   void initState() {
     super.initState();
     index = widget.index;
+    setState(() {});
     initAudioPlayer();
   }
 
@@ -70,7 +71,6 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
         if (playerState == PlayerState.playing) {
           play();
         } else {
-          //Using (Hack) Play() here Else UI glitch is being caused, Will try to find better solution.
           play();
           pause();
         }
@@ -371,97 +371,87 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                   widget.songs[index].lyrics != "null"
                       ? Padding(
                           padding: const EdgeInsets.only(top: 20.0),
-                          child: Builder(builder: (context) {
-                            return FlatButton(
+                          child: Builder(
+                            builder: (context) {
+                              return FlatButton(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(18.0)),
                                 color: Colors.black12,
                                 onPressed: () {
                                   showBottomSheet(
-                                      context: context,
-                                      builder: (context) => Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.black,
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        const Radius.circular(
-                                                            18.0),
-                                                    topRight:
-                                                        const Radius.circular(
-                                                            18.0))),
-                                            height: 400,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
+                                    context: context,
+                                    builder: (context) => Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft:
+                                                  const Radius.circular(18.0),
+                                              topRight:
+                                                  const Radius.circular(18.0))),
+                                      height: 400,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 10.0),
+                                            child: Row(
                                               children: <Widget>[
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 10.0),
-                                                  child: Row(
-                                                    children: <Widget>[
-                                                      IconButton(
-                                                          icon: Icon(
-                                                            Icons
-                                                                .arrow_back_ios,
-                                                            color: accent,
-                                                            size: 20,
-                                                          ),
-                                                          onPressed: () => {
-                                                                Navigator.pop(
-                                                                    context)
-                                                              }),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 42.0),
-                                                          child: Center(
-                                                            child: Text(
-                                                              "Lyrics",
-                                                              style: TextStyle(
-                                                                color: accent,
-                                                                fontSize: 30,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          ),
+                                                IconButton(
+                                                    icon: Icon(
+                                                      Icons.arrow_back_ios,
+                                                      color: accent,
+                                                      size: 20,
+                                                    ),
+                                                    onPressed: () => {
+                                                          Navigator.pop(context)
+                                                        }),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 42.0),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "Lyrics",
+                                                        style: TextStyle(
+                                                          color: accent,
+                                                          fontSize: 30,
+                                                          fontWeight:
+                                                              FontWeight.w500,
                                                         ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
-                                                // lyrics != "null"
-                                                //     ?
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              6.0),
-                                                      child: Center(
-                                                        child:
-                                                            SingleChildScrollView(
-                                                          child: Text(
-                                                            widget.songs[index]
-                                                                .lyrics,
-                                                            style: TextStyle(
-                                                              fontSize: 16.0,
-                                                              color:
-                                                                  accentLight,
-                                                            ),
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                          ),
-                                                        ),
-                                                      )),
-                                                )
                                               ],
                                             ),
-                                          ));
+                                          ),
+                                          // lyrics != "null"
+                                          Expanded(
+                                            flex: 1,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(6.0),
+                                              child: Center(
+                                                child: SingleChildScrollView(
+                                                  child: Text(
+                                                    widget.songs[index].lyrics,
+                                                    style: TextStyle(
+                                                      fontSize: 16.0,
+                                                      color: accentLight,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
                                 },
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(25),
@@ -475,8 +465,10 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                                           color: accent, letterSpacing: 3),
                                     ),
                                   ),
-                                ));
-                          }),
+                                ),
+                              );
+                            },
+                          ),
                         )
                       : Container()
                 ],

@@ -65,11 +65,14 @@ class AppState extends State<Riverto> {
   search() async {
     String searchQuery = searchBar.text;
     if (searchQuery.isEmpty) return;
-    fetchingSongs = true;
-    // setState(() {});
+
+    setState(() {
+      fetchingSongs = true;
+    });
     await fetchSongsList(searchQuery);
-    fetchingSongs = false;
-    // setState(() {});
+    setState(() {
+      fetchingSongs = false;
+    });
   }
 
   getSongDetails(String id, var context) async {
