@@ -18,7 +18,6 @@ import 'package:Riverto/screen/feedback.dart';
 import 'package:Riverto/const.dart';
 import 'package:http/http.dart' as http;
 
-//TODO: Next Song in queue
 class Riverto extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -67,10 +66,10 @@ class AppState extends State<Riverto> {
     String searchQuery = searchBar.text;
     if (searchQuery.isEmpty) return;
     fetchingSongs = true;
-    setState(() {});
+    // setState(() {});
     await fetchSongsList(searchQuery);
     fetchingSongs = false;
-    setState(() {});
+    // setState(() {});
   }
 
   getSongDetails(String id, var context) async {
@@ -105,41 +104,21 @@ class AppState extends State<Riverto> {
   @override
   Widget build(BuildContext context) {
     String lyr;
-    Future fetchLyrics(songId) async {
-      String songUrl =
-          "https://www.jiosaavn.com/api.php?app_version=5.18.3&api_version=4&readable_version=5.18.3&v=79&_format=json&__call=song.getDetails&pids=" +
-              songId;
-      var res =
-          await http.get(songUrl, headers: {"Accept": "application/json"});
-      var resEdited = (res.body).split("-->");
-      var getMain = json.decode(resEdited[1]);
-      if (getMain[songId]["more_info"]["has_lyrics"] == "true") {
-        String lyricsUrl =
-            "https://www.jiosaavn.com/api.php?__call=lyrics.getLyrics&lyrics_id=" +
-                songId +
-                "&ctx=web6dot0&api_version=4&_format=json";
-        var lyricsRes =
-            await http.get(lyricsUrl, headers: {"Accept": "application/json"});
-        var lyricsEdited = (lyricsRes.body).split("-->");
-        var fetchedLyrics = json.decode(lyricsEdited[1]);
+    Future fetchLyrics(art, tit) async {
+      String lyricsApiUrl =
+          "https://sumanjay.vercel.app/lyrics/" + art + "/" + tit;
+      var lyricsApiRes =
+          await http.get(lyricsApiUrl, headers: {"Accept": "application/json"});
+      var lyricsResponse = json.decode(lyricsApiRes.body);
+      if (lyricsResponse['status'] == true &&
+          lyricsResponse['lyrics'] != null) {
         setState(() {
-          lyr = fetchedLyrics["lyrics"].toString().replaceAll("<br>", "\n");
+          lyr = lyricsResponse['lyrics'];
         });
       } else {
         setState(() {
           lyr = "null";
         });
-        String lyricsApiUrl =
-            "https://sumanjay.vercel.app/lyrics/" + artist + "/" + title;
-        var lyricsApiRes = await http
-            .get(lyricsApiUrl, headers: {"Accept": "application/json"});
-        var lyricsResponse = json.decode(lyricsApiRes.body);
-        if (lyricsResponse['status'] == true &&
-            lyricsResponse['lyrics'] != null) {
-          setState(() {
-            lyr = lyricsResponse['lyrics'];
-          });
-        }
       }
     }
 
@@ -460,7 +439,11 @@ class AppState extends State<Riverto> {
                                           icon: Icon(MdiIcons.apacheKafka),
                                           onPressed: () async {
                                             await fetchLyrics(
-                                                    searchedList[index]["id"])
+                                                    searchedList[index]
+                                                            ['more_info']
+                                                        ["singers"],
+                                                    searchedList[index]
+                                                        ['title'])
                                                 .then((_) => {
                                                       print(lyr),
                                                     });
@@ -468,7 +451,8 @@ class AppState extends State<Riverto> {
                                                 new QueueModel()
                                                   ..title = searchedList[index]
                                                       ['title']
-                                                  ..album = album
+                                                  ..album = searchedList[index]
+                                                      ['more_info']['album']
                                                   ..artist = searchedList[index]
                                                       ['more_info']["singers"]
                                                   ..id =

@@ -109,11 +109,13 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
     });
     try {
       await fetchSongDetails(id);
-    } catch (e) {
-      artist = "Unknown";
-    }
+    } catch (e) {}
     setState(() {
       checker = "yes";
+    });
+    initAudioPlayer();
+    setState(() {
+      playerState = PlayerState.playing;
     });
     audioPlayer.play(kUrl);
     play();
@@ -306,7 +308,6 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                                 {
                                   setState(() {
                                     index--;
-                                    print(index);
                                   }),
                                   pause(),
                                   getSongDetails(widget.songs[index].id)
@@ -359,7 +360,6 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                                 {
                                   setState(() {
                                     index++;
-                                    print(index);
                                   }),
                                   pause(),
                                   getSongDetails(widget.songs[index].id)
