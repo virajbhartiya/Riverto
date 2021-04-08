@@ -1,23 +1,17 @@
-import 'dart:io';
-
 import 'package:Riverto/API/saavn.dart';
 import 'package:Riverto/const.dart';
 import 'package:Riverto/style/appColors.dart';
-import 'package:audiotagger/audiotagger.dart';
-import 'package:audiotagger/models/tag.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ext_storage/ext_storage.dart';
+
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:http/http.dart' as http;
-import 'package:permission_handler/permission_handler.dart';
-import 'package:progress_dialog/progress_dialog.dart';
+
 import '../music.dart';
 import 'feedback.dart';
 import 'package:flutter_particles/particles.dart';
@@ -77,7 +71,6 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
     );
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -311,8 +304,8 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                           onPressed: () async {
                                             toast("Starting Download!");
                                             Const.downloadSong(
-                                              Const.recentSongs[index].id,
-                                            );
+                                                Const.recentSongs[index].id,
+                                                context);
                                           },
                                         ),
                                       ),

@@ -546,8 +546,8 @@ class AppState extends State<Riverto> {
                                           onPressed: () async {
                                             toast("Starting Download!");
                                             Const.downloadSong(
-                                              searchedList[index]["id"],
-                                            );
+                                                searchedList[index]["id"],
+                                                context);
                                           },
                                         ),
                                       ),

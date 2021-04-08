@@ -1,9 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
-
+import 'API/saavn.dart';
 import 'Models/recentlyPlayed.dart';
+import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:flutter/foundation.dart';
+import 'package:ext_storage/ext_storage.dart';
+import 'package:audiotagger/audiotagger.dart';
+import 'package:audiotagger/models/tag.dart';
+import 'dart:io';
+
+import 'style/appColors.dart';
 
 class Const {
   static void setValues(String key, String value) async {
@@ -16,7 +28,8 @@ class Const {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool("logIn", true);
   }
-  static downloadSong(id) async {
+
+  static downloadSong(id, context) async {
     String filepath;
     String filepath2;
     var status = await Permission.storage.status;
@@ -119,6 +132,17 @@ class Const {
       toast("Permission Error!");
   }
 
+  static toast(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black,
+      textColor: Color(0xff61e88a),
+      fontSize: 14.0,
+    );
+  }
 
   static Future<Database> database;
   static void dbSetup() async {
