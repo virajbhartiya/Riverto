@@ -29,6 +29,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
     ));
 
     Const.change();
+    // Const.recentSongs = Const.recentSongs.reversed;
     Const.recentSongs.forEach((element) {
       QueueModel s = QueueModel()
         ..album = element.album
