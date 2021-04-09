@@ -52,16 +52,19 @@ class Const {
       );
 
       pr.style(
-        backgroundColor: Color(0xff263238),
+        // backgroundColor: Color(0xff263238),
+        backgroundColor: accent,
         elevation: 4,
         textAlign: TextAlign.left,
         progressTextStyle: TextStyle(color: Colors.white),
         message: "Downloading " + title,
-        messageTextStyle: TextStyle(color: accent),
+        // messageTextStyle: TextStyle(color: accent),
+        messageTextStyle: TextStyle(color: Colors.black),
         progressWidget: Padding(
           padding: const EdgeInsets.all(20.0),
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(accent),
+            // valueColor: AlwaysStoppedAnimation<Color>(accent),
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
           ),
         ),
       );

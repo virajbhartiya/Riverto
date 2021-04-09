@@ -1,4 +1,5 @@
 import 'package:Riverto/API/saavn.dart';
+import 'package:Riverto/Models/queueModel.dart';
 import 'package:Riverto/const.dart';
 import 'package:Riverto/style/appColors.dart';
 import 'package:Riverto/widgets/particle.dart';
@@ -8,8 +9,8 @@ import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import '../music.dart';
-import 'package:flutter_particles/particles.dart';
+// import '../music.dart';
+import '../queueMusic.dart';
 
 class RecentlyPlayedScreen extends StatefulWidget {
   @override
@@ -17,6 +18,8 @@ class RecentlyPlayedScreen extends StatefulWidget {
 }
 
 class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
+  List<QueueModel> songs = [];
+  int i;
   @override
   void initState() {
     super.initState();
@@ -26,21 +29,35 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
     ));
 
     Const.change();
+    Const.recentSongs.forEach((element) {
+      QueueModel s = QueueModel()
+        ..album = element.album
+        ..artist = element.artist
+        ..id = element.id
+        ..lyrics = element.lyrics
+        ..title = element.title
+        ..url = element.url;
+      songs.add(s);
+    });
   }
 
-  getSongDetails(String id) async {
+  getSongDetails(String id, var context, int index) async {
     try {
       await fetchSongDetails(id);
+      // recentSongs.add(recentlyPlayed);
+      Const.change();
     } catch (e) {
       artist = "Unknown";
     }
     setState(() {
       checker = "yes";
     });
+
+    print(this.songs);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AudioApp(),
+        builder: (context) => QueueAudioApp(this.songs, index),
       ),
     );
   }
@@ -68,7 +85,8 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                       if (kUrl != "") {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => AudioApp()),
+                          MaterialPageRoute(
+                              builder: (context) => QueueAudioApp(songs, i)),
                         );
                       }
                     },
@@ -202,7 +220,9 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(10.0),
                                   onTap: () => getSongDetails(
-                                      Const.recentSongs[index].id),
+                                      Const.recentSongs[index].id,
+                                      context,
+                                      index),
                                   onLongPress: () => topSongs(),
                                   splashColor: accent,
                                   hoverColor: accent,

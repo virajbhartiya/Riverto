@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:Riverto/style/appColors.dart';
-import 'package:flutter_particles/particles.dart';
 import 'API/saavn.dart';
 
 String status = 'hidden';
@@ -45,7 +44,7 @@ class AudioAppState extends State<AudioApp> {
   @override
   void initState() {
     super.initState();
-
+    qplaying = true;
     initAudioPlayer();
   }
 

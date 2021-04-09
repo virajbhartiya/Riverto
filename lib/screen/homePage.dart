@@ -13,11 +13,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:Riverto/API/saavn.dart';
-import 'package:Riverto/music.dart';
+// import 'package:Riverto/music.dart';
 import 'package:Riverto/style/appColors.dart';
 import 'package:Riverto/screen/feedback.dart';
 import 'package:Riverto/const.dart';
 import 'package:http/http.dart' as http;
+
+import '../queueMusic.dart';
 
 class Riverto extends StatefulWidget {
   @override
@@ -29,7 +31,7 @@ class Riverto extends StatefulWidget {
 class AppState extends State<Riverto> {
   TextEditingController searchBar = TextEditingController();
   bool fetchingSongs = false;
-
+  List<QueueModel> songs = [];
   void initState() {
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -74,10 +76,18 @@ class AppState extends State<Riverto> {
     setState(() {
       fetchingSongs = false;
     });
-    print(searchedList);
+    searchedList.forEach((element) {
+      QueueModel s = new QueueModel()
+        ..title = element['title']
+        ..album = element['more_info']['album']
+        ..artist = element['more_info']["singers"]
+        ..id = element["id"];
+
+      this.songs.add(s);
+    });
   }
 
-  getSongDetails(String id, var context) async {
+  getSongDetails(String id, var context, int index) async {
     try {
       await fetchSongDetails(id);
       RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
@@ -98,10 +108,12 @@ class AppState extends State<Riverto> {
     setState(() {
       checker = "yes";
     });
+
+    print(this.songs);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AudioApp(),
+        builder: (context) => QueueAudioApp(this.songs, index),
       ),
     );
   }
@@ -200,7 +212,9 @@ class AppState extends State<Riverto> {
                       if (kUrl != "") {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => AudioApp()),
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  QueueAudioApp(this.songs, 0)),
                         );
                       }
                     },
@@ -453,8 +467,10 @@ class AppState extends State<Riverto> {
                                 elevation: 10,
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  onTap: () => getSongDetails(
-                                      searchedList[index]["id"], context),
+                                  onTap: () {
+                                    getSongDetails(searchedList[index]["id"],
+                                        context, index);
+                                  },
                                   onLongPress: () => topSongs(),
                                   splashColor: accent,
                                   hoverColor: accent,
@@ -501,9 +517,7 @@ class AppState extends State<Riverto> {
                                                         ["singers"],
                                                     searchedList[index]
                                                         ['title'])
-                                                .then((_) => {
-                                                      print(lyr),
-                                                    });
+                                                .then((_) => {});
                                             QueueModel queueItem =
                                                 new QueueModel()
                                                   ..title = searchedList[index]
@@ -575,15 +589,15 @@ class AppState extends State<Riverto> {
                                                 28,
                                                 (index) {
                                                   return getTopSong(
-                                                    data.data[index]["image"],
-                                                    data.data[index]["title"],
-                                                    data.data[index][
-                                                                    "more_info"]
-                                                                ["artistMap"]
-                                                            ["primary_artists"]
-                                                        [0]["name"],
-                                                    data.data[index]["id"],
-                                                  );
+                                                      data.data[index]["image"],
+                                                      data.data[index]["title"],
+                                                      data.data[index][
+                                                                      "more_info"]
+                                                                  ["artistMap"][
+                                                              "primary_artists"]
+                                                          [0]["name"],
+                                                      data.data[index]["id"],
+                                                      index);
                                                 },
                                               ),
                                             ),
@@ -616,10 +630,11 @@ class AppState extends State<Riverto> {
   }
 
   //Home screen songs
-  Widget getTopSong(String image, String title, String subtitle, String id) {
+  Widget getTopSong(
+      String image, String title, String subtitle, String id, int index) {
     return InkWell(
       onTap: () {
-        getSongDetails(id, context);
+        getSongDetails(id, context, index);
       },
       child: Column(
         children: [
