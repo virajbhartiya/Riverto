@@ -21,14 +21,15 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    Const.dbSetup();
-    // Const.queueDBSetup();
     setState(() {
       isLoggedIn();
     });
   }
 
   void isLoggedIn() async {
+    await Const.dbSetup();
+    await Const.change();
+    // Const.queueDBSetup();
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     setState(() {

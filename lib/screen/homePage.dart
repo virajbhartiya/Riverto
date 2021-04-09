@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:Riverto/Models/queueModel.dart';
 import 'package:Riverto/Models/recentlyPlayed.dart';
 import 'package:Riverto/screen/queueScreen.dart';
-import 'package:Riverto/screen/recentlyPlayedScreen.dart';
 import 'package:Riverto/widgets/particle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:des_plugin/des_plugin.dart';
@@ -766,14 +765,16 @@ class AppState extends State<Riverto> {
                               ),
                             )
                           : Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(35.0),
-                                child: CircularProgressIndicator(
-                                  valueColor:
-                                      new AlwaysStoppedAnimation<Color>(accent),
-                                ),
-                              ),
-                            )
+                              child: Text("Play some song.",
+                                  style: TextStyle(color: accent, fontSize: 20))
+                              // child: Padding(
+                              //   padding: const EdgeInsets.all(35.0),
+                              //   child: CircularProgressIndicator(
+                              //     valueColor:
+                              //         new AlwaysStoppedAnimation<Color>(accent),
+                              //   ),
+                              // ),
+                              )
                 ],
               ),
             ),

@@ -149,7 +149,7 @@ class Const {
   }
 
   static Future<Database> database;
-  static void dbSetup() async {
+  static Future dbSetup() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     database = openDatabase(
@@ -203,7 +203,7 @@ class Const {
     return await Const.recentlyPlayedList();
   }
 
-  static void change() async {
+  static Future change() async {
     recentSongs = await getSongs();
   }
 
