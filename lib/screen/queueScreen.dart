@@ -1,5 +1,6 @@
 import 'package:Riverto/API/saavn.dart';
 import 'package:Riverto/Models/queueModel.dart';
+import 'package:Riverto/Models/recentlyPlayed.dart';
 import 'package:Riverto/style/appColors.dart';
 import 'package:Riverto/widgets/particle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -32,6 +33,18 @@ class _QueueScreenState extends State<QueueScreen> {
   getSongDetails(String id, int index) async {
     try {
       await fetchSongDetails(id);
+      RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
+        ..title = title
+        ..url = kUrl
+        ..album = album
+        ..artist = artist
+        ..lyrics = lyrics
+        ..image = image
+        ..id = id;
+
+      // recentSongs.add(recentlyPlayed);
+      await Const.insertRecent(recentlyPlayed);
+      Const.change();
     } catch (e) {
       artist = "Unknown";
     }

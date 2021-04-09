@@ -49,6 +49,7 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
   void initState() {
     super.initState();
     index = widget.index;
+    kUrl = widget.songs[index].url;
     setState(() {});
     initAudioPlayer();
   }
