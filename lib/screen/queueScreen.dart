@@ -10,7 +10,7 @@ import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../const.dart';
-import '../queueMusic.dart';
+import '../music.dart';
 
 class QueueScreen extends StatefulWidget {
   @override
@@ -60,7 +60,7 @@ class _QueueScreenState extends State<QueueScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => QueueAudioApp(songs, index),
+        builder: (context) => AudioApp(songs, index),
       ),
     );
   }
@@ -89,8 +89,7 @@ class _QueueScreenState extends State<QueueScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  QueueAudioApp(songs, index)),
+                              builder: (context) => AudioApp(songs, index)),
                         );
                       }
                     },

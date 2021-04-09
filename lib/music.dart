@@ -7,6 +7,7 @@ import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:Riverto/style/appColors.dart';
 import 'API/saavn.dart';
+import 'Models/queueModel.dart';
 
 String status = 'hidden';
 AudioPlayer audioPlayer;
@@ -17,12 +18,15 @@ typedef void OnError(Exception exception);
 enum PlayerState { stopped, playing, paused }
 
 class AudioApp extends StatefulWidget {
+  final List<QueueModel> songs;
+  final int index;
+  AudioApp(this.songs, this.index);
   @override
-  AudioAppState createState() => AudioAppState();
+  _AudioAppState createState() => _AudioAppState();
 }
 
 @override
-class AudioAppState extends State<AudioApp> {
+class _AudioAppState extends State<AudioApp> {
   Duration duration;
   Duration position;
 
@@ -40,11 +44,13 @@ class AudioAppState extends State<AudioApp> {
 
   StreamSubscription _positionSubscription;
   StreamSubscription _audioPlayerStateSubscription;
-
+  int index;
   @override
   void initState() {
     super.initState();
-    qplaying = true;
+    index = widget.index;
+    kUrl = widget.songs[index].url;
+    setState(() {});
     initAudioPlayer();
   }
 
@@ -66,7 +72,6 @@ class AudioAppState extends State<AudioApp> {
         if (playerState == PlayerState.playing) {
           play();
         } else {
-          //Using (Hack) Play() here Else UI glitch is being caused, Will try to find better solution.
           play();
           pause();
         }
@@ -97,6 +102,29 @@ class AudioAppState extends State<AudioApp> {
           position = Duration(seconds: 0);
         });
     });
+  }
+
+  getSongDetails(String id) async {
+    setState(() {
+      checker = "no";
+    });
+    try {
+      await fetchSongDetails(id);
+      play();
+      setState(() {
+        playerState = PlayerState.playing;
+        checker = "yes";
+      });
+    } catch (e) {}
+    setState(() {
+      checker = "yes";
+    });
+    initAudioPlayer();
+    setState(() {
+      playerState = PlayerState.playing;
+    });
+    audioPlayer.play(widget.songs[index].url);
+    play();
   }
 
   Future play() async {
@@ -204,11 +232,6 @@ class AudioAppState extends State<AudioApp> {
                             children: <Widget>[
                               Text(
                                 title,
-                                // shaderRect: Rect.fromLTWH(13.0, 0.0, 100.0, 50.0),
-                                // gradient: LinearGradient(colors: [
-                                //   Color(0xff4db6ac),
-                                //   Color(0xff61e88a),
-                                // ]),
                                 textScaleFactor: 2.5,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -262,6 +285,7 @@ class AudioAppState extends State<AudioApp> {
                   min: 0.0,
                   max: duration.inMilliseconds.toDouble()),
             if (position != null) _buildProgressView(),
+            if (positionText == durationText) Container(),
             Padding(
               padding: const EdgeInsets.only(top: .0),
               child: Column(
@@ -269,6 +293,29 @@ class AudioAppState extends State<AudioApp> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: accent,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: IconButton(
+                            onPressed: () => {
+                              if (index > 0)
+                                {
+                                  setState(() {
+                                    index--;
+                                  }),
+                                  pause(),
+                                  getSongDetails(widget.songs[index].id)
+                                }
+                            },
+                            iconSize: 40.0,
+                            icon: Icon(MdiIcons.panLeft),
+                            color: Color(0xff263238),
+                          ),
+                        ),
+                      ),
                       isPlaying
                           ? Container()
                           : Container(
@@ -297,117 +344,116 @@ class AudioAppState extends State<AudioApp> {
                                 color: Color(0xff263238),
                               ),
                             )
-                          : Container()
+                          : Container(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: accent,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: IconButton(
+                            onPressed: () => {
+                              if (index < widget.songs.length - 1)
+                                {
+                                  setState(() {
+                                    index++;
+                                  }),
+                                  pause(),
+                                  getSongDetails(widget.songs[index].id)
+                                }
+                            },
+                            iconSize: 40.0,
+                            icon: Icon(MdiIcons.panRight),
+                            color: Color(0xff263238),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   lyrics != "null"
                       ? Padding(
                           padding: const EdgeInsets.only(top: 20.0),
-                          child: Builder(builder: (context) {
-                            return FlatButton(
+                          child: Builder(
+                            builder: (context) {
+                              return FlatButton(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(18.0)),
                                 color: Colors.black12,
                                 onPressed: () {
                                   showBottomSheet(
-                                      context: context,
-                                      builder: (context) => Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.black,
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        const Radius.circular(
-                                                            18.0),
-                                                    topRight:
-                                                        const Radius.circular(
-                                                            18.0))),
-                                            height: 400,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
+                                    context: context,
+                                    builder: (context) => Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft:
+                                                  const Radius.circular(18.0),
+                                              topRight:
+                                                  const Radius.circular(18.0))),
+                                      height: 400,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 10.0),
+                                            child: Row(
                                               children: <Widget>[
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 10.0),
-                                                  child: Row(
-                                                    children: <Widget>[
-                                                      IconButton(
-                                                          icon: Icon(
-                                                            Icons
-                                                                .arrow_back_ios,
-                                                            color: accent,
-                                                            size: 20,
-                                                          ),
-                                                          onPressed: () => {
-                                                                Navigator.pop(
-                                                                    context)
-                                                              }),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 42.0),
-                                                          child: Center(
-                                                            child: Text(
-                                                              "Lyrics",
-                                                              style: TextStyle(
-                                                                color: accent,
-                                                                fontSize: 30,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          ),
+                                                IconButton(
+                                                    icon: Icon(
+                                                      Icons.arrow_back_ios,
+                                                      color: accent,
+                                                      size: 20,
+                                                    ),
+                                                    onPressed: () => {
+                                                          Navigator.pop(context)
+                                                        }),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 42.0),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "Lyrics",
+                                                        style: TextStyle(
+                                                          color: accent,
+                                                          fontSize: 30,
+                                                          fontWeight:
+                                                              FontWeight.w500,
                                                         ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
-                                                // lyrics != "null"
-                                                //     ?
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              6.0),
-                                                      child: Center(
-                                                        child:
-                                                            SingleChildScrollView(
-                                                          child: Text(
-                                                            lyrics,
-                                                            style: TextStyle(
-                                                              fontSize: 16.0,
-                                                              color:
-                                                                  accentLight,
-                                                            ),
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                          ),
-                                                        ),
-                                                      )),
-                                                )
-                                                // : Padding(
-                                                //     padding:
-                                                //         const EdgeInsets.only(
-                                                //             top: 120.0),
-                                                //     child: Center(
-                                                //       child: Container(
-                                                //         child: Text(
-                                                //           "No Lyrics available ;(",
-                                                //           style: TextStyle(
-                                                //               color: accentLight,
-                                                //               fontSize: 25),
-                                                //         ),
-                                                //       ),
-                                                //     ),
-                                                //   ),
                                               ],
                                             ),
-                                          ));
+                                          ),
+                                          // lyrics != "null"
+                                          Expanded(
+                                            flex: 1,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(6.0),
+                                              child: Center(
+                                                child: SingleChildScrollView(
+                                                  child: Text(
+                                                    lyrics,
+                                                    style: TextStyle(
+                                                      fontSize: 16.0,
+                                                      color: accentLight,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
                                 },
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(25),
@@ -421,8 +467,10 @@ class AudioAppState extends State<AudioApp> {
                                           color: accent, letterSpacing: 3),
                                     ),
                                   ),
-                                ));
-                          }),
+                                ),
+                              );
+                            },
+                          ),
                         )
                       : Container()
                 ],

@@ -19,7 +19,7 @@ import 'package:Riverto/screen/feedback.dart';
 import 'package:Riverto/const.dart';
 import 'package:http/http.dart' as http;
 
-import '../queueMusic.dart';
+import '../music.dart';
 
 class Riverto extends StatefulWidget {
   @override
@@ -113,7 +113,7 @@ class AppState extends State<Riverto> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => QueueAudioApp(this.songs, index),
+        builder: (context) => AudioApp(this.songs, index),
       ),
     );
   }
@@ -213,8 +213,7 @@ class AppState extends State<Riverto> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  QueueAudioApp(this.songs, 0)),
+                              builder: (context) => AudioApp(this.songs, 0)),
                         );
                       }
                     },

@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 // import '../music.dart';
-import '../queueMusic.dart';
+import '../music.dart';
 
 class RecentlyPlayedScreen extends StatefulWidget {
   @override
@@ -58,7 +58,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => QueueAudioApp(this.songs, index),
+        builder: (context) => AudioApp(this.songs, index),
       ),
     );
   }
@@ -87,7 +87,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => QueueAudioApp(songs, i)),
+                              builder: (context) => AudioApp(songs, i)),
                         );
                       }
                     },
