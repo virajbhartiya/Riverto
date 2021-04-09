@@ -49,7 +49,7 @@ class _AudioAppState extends State<AudioApp> {
   void initState() {
     super.initState();
     index = widget.index;
-    kUrl = widget.songs[index].url;
+    print(kUrl);
     setState(() {});
     initAudioPlayer();
   }

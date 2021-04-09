@@ -98,7 +98,7 @@ class AppState extends State<Riverto> {
         ..lyrics = lyrics
         ..image = image
         ..id = id;
-
+      print(kUrl);
       // recentSongs.add(recentlyPlayed);
       await Const.insertRecent(recentlyPlayed);
       Const.change();
@@ -109,7 +109,6 @@ class AppState extends State<Riverto> {
       checker = "yes";
     });
 
-    print(this.songs);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -348,22 +347,22 @@ class AppState extends State<Riverto> {
                         ),
                       ),
                       //recentlyPlayed button
-                      Container(
-                        child: IconButton(
-                          iconSize: 26,
-                          alignment: Alignment.center,
-                          icon: Icon(MdiIcons.music),
-                          color: accent,
-                          onPressed: () => {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => RecentlyPlayedScreen(),
-                              ),
-                            ),
-                          },
-                        ),
-                      ),
+                      // Container(
+                      //   child: IconButton(
+                      //     iconSize: 26,
+                      //     alignment: Alignment.center,
+                      //     icon: Icon(MdiIcons.music),
+                      //     color: accent,
+                      //     onPressed: () => {
+                      //       Navigator.push(
+                      //         context,
+                      //         CupertinoPageRoute(
+                      //           builder: (context) => RecentlyPlayedScreen(),
+                      //         ),
+                      //       ),
+                      //     },
+                      //   ),
+                      // ),
                       //queue button
                       Container(
                         child: IconButton(
@@ -470,7 +469,6 @@ class AppState extends State<Riverto> {
                                     getSongDetails(searchedList[index]["id"],
                                         context, index);
                                   },
-                                  onLongPress: () => topSongs(),
                                   splashColor: accent,
                                   hoverColor: accent,
                                   focusColor: accent,
@@ -551,64 +549,223 @@ class AppState extends State<Riverto> {
                             );
                           },
                         )
+                      :
 
                       //No search
-                      : FutureBuilder(
-                          future: topSongs(),
-                          builder: (context, data) {
-                            if (data.hasData)
-                              return Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 30.0, bottom: 10, left: 8),
-                                      child: Text(
-                                        "Top Songs",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontSize: 22,
-                                          color: accent,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                      // : FutureBuilder(
+                      // future: ,
+                      // future: topSongs(),
+                      // builder: (context, data) {
+                      Const.recentSongs.length > 0
+                          ? Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 30.0, bottom: 0, left: 8),
+                                    child: Text(
+                                      "Recent.",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        color: accent,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    Container(
-                                      child: SingleChildScrollView(
-                                        child: Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height -
-                                              250,
-                                          child: SafeArea(
-                                            child: GridView.count(
-                                              crossAxisCount: 2,
-                                              children: List.generate(
-                                                28,
-                                                (index) {
-                                                  return getTopSong(
-                                                      data.data[index]["image"],
-                                                      data.data[index]["title"],
-                                                      data.data[index][
-                                                                      "more_info"]
-                                                                  ["artistMap"][
-                                                              "primary_artists"]
-                                                          [0]["name"],
-                                                      data.data[index]["id"],
-                                                      index);
-                                                },
-                                              ),
-                                            ),
+                                  ),
+                                  Container(
+                                    child: SingleChildScrollView(
+                                      child: Container(
+                                        height:
+                                            MediaQuery.of(context).size.height -
+                                                250,
+                                        child: SafeArea(
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            itemCount: Const.recentSongs.length,
+                                            itemBuilder:
+                                                (BuildContext ctxt, int index) {
+                                              // Const.recentSongs.length,
+                                              // (index) {
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 0, bottom: 5),
+                                                child: Card(
+                                                  color: Colors.black,
+                                                  // color: Colors.green,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                  ),
+                                                  elevation: 10,
+                                                  child: InkWell(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                    onTap: () {
+                                                      // getSongDetails(
+                                                      //     searchedList[
+                                                      //         index]["id"],
+                                                      //     context,
+                                                      //     index);
+                                                    },
+                                                    // onLongPress: () =>
+                                                    //     topSongs(),
+                                                    splashColor: accent,
+                                                    hoverColor: accent,
+                                                    focusColor: accent,
+                                                    highlightColor: accent,
+                                                    child: ListTile(
+                                                      leading: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(.0),
+                                                        child: Icon(
+                                                          MdiIcons
+                                                              .musicNoteOutline,
+                                                          size: 30,
+                                                          color: accent,
+                                                        ),
+                                                        // Icon(
+                                                        //   MdiIcons.musicNoteOutline,
+                                                        //   size: 30,
+                                                        //   color: accent,
+                                                        // ),
+                                                      ),
+                                                      title: Text(
+                                                        (Const
+                                                                .recentSongs[
+                                                                    index]
+                                                                .title)
+                                                            .toString()
+                                                            .split("(")[0]
+                                                            .replaceAll(
+                                                                "&quot;", "\"")
+                                                            .replaceAll(
+                                                                "&amp;", "&"),
+                                                        style: TextStyle(
+                                                            color: accent),
+                                                      ),
+                                                      subtitle: Text(
+                                                        Const.recentSongs[index]
+                                                            .artist,
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                      trailing: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          IconButton(
+                                                            color: accent,
+                                                            icon: Icon(MdiIcons
+                                                                .apacheKafka),
+                                                            onPressed:
+                                                                () async {
+                                                              await fetchLyrics(
+                                                                      Const
+                                                                          .recentSongs[
+                                                                              index]
+                                                                          .id,
+                                                                      Const
+                                                                          .recentSongs[
+                                                                              index]
+                                                                          .artist,
+                                                                      Const
+                                                                          .recentSongs[
+                                                                              index]
+                                                                          .title)
+                                                                  .then((_) =>
+                                                                      {});
+                                                              QueueModel
+                                                                  queueItem =
+                                                                  new QueueModel()
+                                                                    ..title = Const
+                                                                        .recentSongs[
+                                                                            index]
+                                                                        .title
+                                                                    ..album = Const
+                                                                        .recentSongs[
+                                                                            index]
+                                                                        .album
+                                                                    ..artist = Const
+                                                                        .recentSongs[
+                                                                            index]
+                                                                        .artist
+                                                                    ..id = Const
+                                                                        .recentSongs[
+                                                                            index]
+                                                                        .id
+                                                                    ..lyrics = Const
+                                                                        .recentSongs[
+                                                                            index]
+                                                                        .id
+                                                                    ..url = Const
+                                                                        .recentSongs[
+                                                                            index]
+                                                                        .url;
+
+                                                              Const.queueSongs
+                                                                  .add(
+                                                                      queueItem);
+                                                            },
+                                                          ),
+                                                          IconButton(
+                                                            color: accent,
+                                                            icon: Icon(MdiIcons
+                                                                .downloadOutline),
+                                                            onPressed:
+                                                                () async {
+                                                              Const.toast(
+                                                                  "Starting Download!");
+                                                              Const.downloadSong(
+                                                                  searchedList[
+                                                                          index]
+                                                                      ["id"],
+                                                                  context);
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                              // getTopSong(
+                                              //     Const.recentSongs[index]
+                                              //         .image,
+                                              //     Const.recentSongs[index]
+                                              //         .title,
+                                              //     Const.recentSongs[index]
+                                              //         .artist,
+                                              //     Const.recentSongs[index]
+                                              //         .id,
+                                              //     index);
+                                              // data.data[index]["image"],
+                                              // data.data[index]["title"],
+                                              // data.data[index][
+                                              //                 "more_info"]
+                                              //             ["artistMap"][
+                                              //         "primary_artists"]
+                                              //     [0]["name"],
+                                              // data.data[index]["id"],
+                                              // index);
+                                            },
                                           ),
                                         ),
                                       ),
                                     ),
-                                    // SizedBox(height: 20),
-                                  ],
-                                ),
-                              );
-                            return Center(
+                                  ),
+                                  // SizedBox(height: 20),
+                                ],
+                              ),
+                            )
+                          : Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(35.0),
                                 child: CircularProgressIndicator(
@@ -616,9 +773,7 @@ class AppState extends State<Riverto> {
                                       new AlwaysStoppedAnimation<Color>(accent),
                                 ),
                               ),
-                            );
-                          },
-                        ),
+                            )
                 ],
               ),
             ),
@@ -638,7 +793,7 @@ class AppState extends State<Riverto> {
       child: Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.22,
+            height: MediaQuery.of(context).size.height * 0.3,
             width: MediaQuery.of(context).size.width / 2,
             child: Card(
               shape: RoundedRectangleBorder(
