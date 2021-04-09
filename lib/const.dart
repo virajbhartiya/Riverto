@@ -153,7 +153,7 @@ class Const {
     WidgetsFlutterBinding.ensureInitialized();
 
     database = openDatabase(
-      join(await getDatabasesPath(), 'recentlyPlayed'),
+      join(await getDatabasesPath(), 'recentlyPlayed.db'),
       onCreate: (db, version) {
         return db.execute(
           "CREATE TABLE recent(title TEXT PRIMARY KEY, url TEXT,image TEXT,album TEXT,artist TEXT,lyrics TEXT,id TEXT)",
@@ -209,4 +209,62 @@ class Const {
 
   static List<RecentlyPlayed> recentSongs = [];
   static List<QueueModel> queueSongs = [];
+}
+
+class Playlist {
+  static List<String> playlists = [];
+
+  static void sharedPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('playlists', playlists);
+  }
+
+  static Future getVals() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    playlists = prefs.getStringList('playlists') ?? [];
+  }
+
+  static Future<Database> database;
+  static Future dbSetup(name) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    database = openDatabase(
+      join(await getDatabasesPath(), name + ".db"),
+      onCreate: (db, version) {
+        print("created " + name);
+        return db.execute(
+          "CREATE TABLE recent(title TEXT PRIMARY KEY, url TEXT,album TEXT,artist TEXT,lyrics TEXT,id TEXT)",
+        );
+      },
+      version: 1,
+    );
+  }
+
+  static Future<void> insertSong(QueueModel recent, name) async {
+    await dbSetup(name);
+    final Database db = await database;
+
+    await db.insert(
+      name,
+      recent.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print("inserted " + name);
+  }
+
+  static Future<List<QueueModel>> playlistList(name) async {
+    await dbSetup(name);
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(name);
+
+    return List.generate(maps.length, (i) {
+      return QueueModel(
+          title: maps[i]['title'],
+          url: maps[i]['url'],
+          album: maps[i]['album'],
+          artist: maps[i]['artist'],
+          lyrics: maps[i]['lyrics'],
+          id: maps[i]['id']);
+    });
+  }
 }
