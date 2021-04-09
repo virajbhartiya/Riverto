@@ -1,50 +1,49 @@
 import 'package:Riverto/API/saavn.dart';
 import 'package:Riverto/Models/queueModel.dart';
-import 'package:Riverto/const.dart';
+import 'package:Riverto/Models/recentlyPlayed.dart';
 import 'package:Riverto/style/appColors.dart';
 import 'package:Riverto/widgets/particle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-// import '../music.dart';
+
+import '../const.dart';
 import '../queueMusic.dart';
 
-class RecentlyPlayedScreen extends StatefulWidget {
+class QueueScreen extends StatefulWidget {
   @override
-  _RecentlyPlayedScreenState createState() => _RecentlyPlayedScreenState();
+  _QueueScreenState createState() => _QueueScreenState();
 }
 
-class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
-  List<QueueModel> songs = [];
-  int i;
+class _QueueScreenState extends State<QueueScreen> {
+  List<QueueModel> songs;
+  int index;
   @override
+  // ignore: must_call_super
   void initState() {
-    super.initState();
+    songs = Const.queueSongs;
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.black,
       statusBarColor: Colors.transparent,
     ));
-
-    Const.change();
-    Const.recentSongs.forEach((element) {
-      QueueModel s = QueueModel()
-        ..album = element.album
-        ..artist = element.artist
-        ..id = element.id
-        ..lyrics = element.lyrics
-        ..title = element.title
-        ..url = element.url;
-      songs.add(s);
-    });
   }
 
-  getSongDetails(String id, var context, int index) async {
+  getSongDetails(String id, int index) async {
     try {
       await fetchSongDetails(id);
+      RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
+        ..title = title
+        ..url = kUrl
+        ..album = album
+        ..artist = artist
+        ..lyrics = lyrics
+        ..image = image
+        ..id = id;
+
       // recentSongs.add(recentlyPlayed);
+      await Const.insertRecent(recentlyPlayed);
       Const.change();
     } catch (e) {
       artist = "Unknown";
@@ -52,12 +51,16 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
     setState(() {
       checker = "yes";
     });
-
-    print(this.songs);
+    kUrl = songs[index].url;
+    // image = songs[index].image;
+    title = songs[index].title;
+    album = songs[index].album;
+    artist = songs[index].artist;
+    lyrics = songs[index].lyrics;
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => QueueAudioApp(this.songs, index),
+        builder: (context) => QueueAudioApp(songs, index),
       ),
     );
   }
@@ -86,7 +89,8 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => QueueAudioApp(songs, i)),
+                              builder: (context) =>
+                                  QueueAudioApp(songs, index)),
                         );
                       }
                     },
@@ -187,7 +191,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            "Recent.",
+                            "Queue.",
                             style: TextStyle(
                               color: Color(0xff61e88a),
                               fontSize: 45,
@@ -202,12 +206,12 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                   ),
                   Padding(padding: EdgeInsets.only(top: 20)),
                   //Search bar
-                  Const.recentSongs != null
+                  songs != null
                       //searched songs
                       ? ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: Const.recentSongs.length,
+                          itemCount: songs.length,
                           itemBuilder: (BuildContext ctxt, int index) {
                             return Padding(
                               padding: const EdgeInsets.only(top: 5, bottom: 5),
@@ -219,10 +223,8 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                 elevation: 0,
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  onTap: () => getSongDetails(
-                                      Const.recentSongs[index].id,
-                                      context,
-                                      index),
+                                  onTap: () =>
+                                      getSongDetails(songs[index].id, index),
                                   onLongPress: () => topSongs(),
                                   splashColor: accent,
                                   hoverColor: accent,
@@ -245,7 +247,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                           // ),
                                         ),
                                         title: Text(
-                                          (Const.recentSongs[index].title)
+                                          (songs[index].title)
                                               .toString()
                                               .split("(")[0]
                                               .replaceAll("&quot;", "\"")
@@ -253,7 +255,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                           style: TextStyle(color: Colors.white),
                                         ),
                                         subtitle: Text(
-                                          Const.recentSongs[index].artist,
+                                          songs[index].artist,
                                           style: TextStyle(color: Colors.white),
                                         ),
                                         trailing: IconButton(
@@ -262,8 +264,7 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
                                           onPressed: () async {
                                             Const.toast("Starting Download!");
                                             Const.downloadSong(
-                                                Const.recentSongs[index].id,
-                                                context);
+                                                songs[index].id, context);
                                           },
                                         ),
                                       ),

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 List searchedList = [];
 List topSongsList = [];
+bool qplaying = false;
 String kUrl = "",
     checker,
     image = "",
