@@ -48,9 +48,7 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
   @override
   void initState() {
     super.initState();
-    print("hello");
     index = widget.index;
-    print(widget.songs[index].url);
     setState(() {});
     initAudioPlayer();
   }
@@ -111,6 +109,11 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
     });
     try {
       await fetchSongDetails(id);
+      play();
+      setState(() {
+        playerState = PlayerState.playing;
+        checker = "yes";
+      });
     } catch (e) {}
     setState(() {
       checker = "yes";
@@ -124,12 +127,9 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
   }
 
   Future play() async {
-    await audioPlayer.play(widget.songs[index].url);
+    await audioPlayer.play(kUrl);
     MediaNotification.showNotification(
-        title: widget.songs[index].title,
-        author: widget.songs[index].artist,
-        artUri: image,
-        isPlaying: true);
+        title: title, author: artist, artUri: image, isPlaying: true);
     if (mounted)
       setState(() {
         playerState = PlayerState.playing;
@@ -230,7 +230,7 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                           child: Column(
                             children: <Widget>[
                               Text(
-                                widget.songs[index].title,
+                                title,
                                 textScaleFactor: 2.5,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -241,9 +241,7 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 0.0),
                                 child: Text(
-                                  widget.songs[index].album +
-                                      "  |  " +
-                                      widget.songs[index].artist,
+                                  album + "  |  " + artist,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: accentLight,
@@ -286,6 +284,7 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                   min: 0.0,
                   max: duration.inMilliseconds.toDouble()),
             if (position != null) _buildProgressView(),
+            if (positionText == durationText) Container(),
             Padding(
               padding: const EdgeInsets.only(top: .0),
               child: Column(
@@ -370,7 +369,7 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                       )
                     ],
                   ),
-                  widget.songs[index].lyrics != "null"
+                  lyrics != "null"
                       ? Padding(
                           padding: const EdgeInsets.only(top: 20.0),
                           child: Builder(
@@ -439,7 +438,7 @@ class _QueueAudioAppState extends State<QueueAudioApp> {
                                               child: Center(
                                                 child: SingleChildScrollView(
                                                   child: Text(
-                                                    widget.songs[index].lyrics,
+                                                    lyrics,
                                                     style: TextStyle(
                                                       fontSize: 16.0,
                                                       color: accentLight,
