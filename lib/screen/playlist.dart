@@ -1,49 +1,62 @@
 import 'package:Riverto/API/saavn.dart';
 import 'package:Riverto/Models/queueModel.dart';
-import 'package:Riverto/Models/recentlyPlayed.dart';
+import 'package:Riverto/const.dart';
+import 'package:Riverto/screen/playlistScreen.dart';
 import 'package:Riverto/style/appColors.dart';
 import 'package:Riverto/widgets/particle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
-import '../const.dart';
+// import '../music.dart';
 import '../music.dart';
 
-class QueueScreen extends StatefulWidget {
+class Playlists extends StatefulWidget {
   @override
-  _QueueScreenState createState() => _QueueScreenState();
+  _PlaylistsState createState() => _PlaylistsState();
 }
 
-class _QueueScreenState extends State<QueueScreen> {
-  List<QueueModel> songs;
-  int index;
+class _PlaylistsState extends State<Playlists> {
+  List<String> playlistNames = [];
+  List<QueueModel> songs = [];
+  int i;
+
+  void setnames() {
+    setState(() {
+      playlistNames = Playlist.playlists;
+    });
+  }
+
   @override
-  // ignore: must_call_super
   void initState() {
-    songs = Const.queueSongs;
+    super.initState();
+    Playlist.playlistSongs = [];
+    setnames();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.black,
       statusBarColor: Colors.transparent,
     ));
+
+    Const.change();
+    // Const.recentSongs = Const.recentSongs.reversed;
+    Const.recentSongs.forEach((element) {
+      QueueModel s = QueueModel()
+        ..album = element.album
+        ..artist = element.artist
+        ..id = element.id
+        ..lyrics = element.lyrics
+        ..title = element.title
+        ..url = element.url;
+      songs.add(s);
+    });
   }
 
-  getSongDetails(String id, int index) async {
+  getSongDetails(String id, var context, int index) async {
     try {
       await fetchSongDetails(id);
-      RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
-        ..title = title
-        ..url = kUrl
-        ..album = album
-        ..artist = artist
-        ..lyrics = lyrics
-        ..image = image
-        ..id = id;
-
       // recentSongs.add(recentlyPlayed);
-      await Const.insertRecent(recentlyPlayed);
       Const.change();
     } catch (e) {
       artist = "Unknown";
@@ -51,16 +64,11 @@ class _QueueScreenState extends State<QueueScreen> {
     setState(() {
       checker = "yes";
     });
-    kUrl = songs[index].url;
-    // image = songs[index].image;
-    title = songs[index].title;
-    album = songs[index].album;
-    artist = songs[index].artist;
-    lyrics = songs[index].lyrics;
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AudioApp(songs, index),
+        builder: (context) => AudioApp(this.songs, index),
       ),
     );
   }
@@ -89,7 +97,7 @@ class _QueueScreenState extends State<QueueScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AudioApp(songs, index)),
+                              builder: (context) => AudioApp(songs, i)),
                         );
                       }
                     },
@@ -190,7 +198,7 @@ class _QueueScreenState extends State<QueueScreen> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            "Queue.",
+                            "Playlists.",
                             style: TextStyle(
                               color: Color(0xff61e88a),
                               fontSize: 45,
@@ -205,26 +213,39 @@ class _QueueScreenState extends State<QueueScreen> {
                   ),
                   Padding(padding: EdgeInsets.only(top: 20)),
                   //Search bar
-                  songs != null
+                  Playlist.playlists != null
                       //searched songs
                       ? ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: songs.length,
+                          itemCount: Playlist.playlists.length,
                           itemBuilder: (BuildContext ctxt, int index) {
                             return Padding(
                               padding: const EdgeInsets.only(top: 5, bottom: 5),
                               child: Card(
                                 color: Colors.black,
                                 shape: RoundedRectangleBorder(
+                                  side:
+                                      new BorderSide(color: accent, width: 2.0),
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 elevation: 0,
                                 child: InkWell(
+                                  onTap: () async {
+                                    try {
+                                      await Playlist.playlistList(
+                                          playlistNames[index]);
+
+                                      return Navigator.of(context).push(
+                                          CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  PlaylistScreen(Playlist
+                                                      .playlists[index])));
+                                    } catch (e) {
+                                      Const.toast("Playlist empty");
+                                    }
+                                  },
                                   borderRadius: BorderRadius.circular(10.0),
-                                  onTap: () =>
-                                      getSongDetails(songs[index].id, index),
-                                  onLongPress: () => topSongs(),
                                   splashColor: accent,
                                   hoverColor: accent,
                                   focusColor: accent,
@@ -232,39 +253,34 @@ class _QueueScreenState extends State<QueueScreen> {
                                   child: Column(
                                     children: <Widget>[
                                       ListTile(
-                                        leading: Padding(
-                                          padding: const EdgeInsets.all(.0),
-                                          child: Icon(
-                                            MdiIcons.musicNoteOutline,
-                                            size: 30,
-                                            color: accent,
-                                          ),
-                                          // Icon(
-                                          //   MdiIcons.musicNoteOutline,
-                                          //   size: 30,
-                                          //   color: accent,
-                                          // ),
-                                        ),
                                         title: Text(
-                                          (songs[index].title)
+                                          (playlistNames[index])
                                               .toString()
                                               .split("(")[0]
                                               .replaceAll("&quot;", "\"")
                                               .replaceAll("&amp;", "&"),
-                                          style: TextStyle(color: Colors.white),
+                                          style: TextStyle(
+                                              color: accent, fontSize: 25),
                                         ),
-                                        subtitle: Text(
-                                          songs[index].artist,
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        trailing: IconButton(
-                                          color: accent,
-                                          icon: Icon(MdiIcons.downloadOutline),
-                                          onPressed: () async {
-                                            Const.toast("Starting Download!");
-                                            Const.downloadSong(
-                                                songs[index].id, context);
-                                          },
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              color: Colors.red[600],
+                                              icon: Icon(MdiIcons.delete),
+                                              onPressed: () async {
+                                                await Playlist.playlistList(
+                                                    playlistNames[index]);
+
+                                                Playlist.playlists.remove(
+                                                    playlistNames[index]);
+                                                setnames();
+                                                Playlist.sharedPrefs();
+                                                Const.toast(
+                                                    "Playlist deleated");
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],

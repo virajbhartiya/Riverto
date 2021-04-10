@@ -142,18 +142,18 @@ class Const {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.black,
-      textColor: Color(0xff61e88a),
+      backgroundColor: Color(0xff61e88a),
+      textColor: Colors.black,
       fontSize: 14.0,
     );
   }
 
   static Future<Database> database;
-  static void dbSetup() async {
+  static Future dbSetup() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     database = openDatabase(
-      join(await getDatabasesPath(), 'recentlyPlayed'),
+      join(await getDatabasesPath(), 'recentlyPlayed.db'),
       onCreate: (db, version) {
         return db.execute(
           "CREATE TABLE recent(title TEXT PRIMARY KEY, url TEXT,image TEXT,album TEXT,artist TEXT,lyrics TEXT,id TEXT)",
@@ -203,10 +203,82 @@ class Const {
     return await Const.recentlyPlayedList();
   }
 
-  static void change() async {
+  static Future change() async {
     recentSongs = await getSongs();
   }
 
   static List<RecentlyPlayed> recentSongs = [];
   static List<QueueModel> queueSongs = [];
+}
+
+class Playlist {
+  static List<String> playlists = [];
+
+  static Future sharedPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('playlists', playlists);
+  }
+
+  static Future getVals() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    playlists = prefs.getStringList('playlists') ?? [];
+  }
+
+  static Future<Database> database;
+  static Future dbSetup(name) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    database = openDatabase(
+      join(await getDatabasesPath(), name + ".db"),
+      onCreate: (db, version) {
+        return db.execute(
+          "CREATE TABLE " +
+              name +
+              " (title TEXT PRIMARY KEY, url TEXT,album TEXT,artist TEXT,lyrics TEXT,id TEXT)",
+        );
+      },
+      version: 1,
+    );
+  }
+
+  static Future<void> insertSong(QueueModel recent, name) async {
+    await dbSetup(name);
+    final Database db = await database;
+
+    await db.insert(
+      name,
+      recent.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future playlistList(name) async {
+    await dbSetup(name);
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(name);
+    playlistSongs = List.generate(maps.length, (i) {
+      return QueueModel(
+          title: maps[i]['title'],
+          url: maps[i]['url'],
+          album: maps[i]['album'],
+          artist: maps[i]['artist'],
+          lyrics: maps[i]['lyrics'],
+          id: maps[i]['id']);
+    });
+    // return playlistSongs;
+  }
+
+  static Future<void> deleteDbElement(String id, name) async {
+    await dbSetup(name);
+    final db = await database;
+
+    await db.delete(
+      name,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+    await playlistList(name);
+  }
+
+  static List<QueueModel> playlistSongs;
 }
