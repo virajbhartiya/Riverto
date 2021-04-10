@@ -52,7 +52,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         ..image = image
         ..id = id;
 
-      // recentSongs.add(recentlyPlayed);
       await Const.insertRecent(recentlyPlayed);
       Const.change();
     } catch (e) {
@@ -61,9 +60,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     setState(() {
       checker = "yes";
     });
-    // kUrl =
-    // print("url: " + songs[index].url);
-    // image = songs[index].image;
     title = songs[index].title;
     album = songs[index].album;
     artist = songs[index].artist;
@@ -86,7 +82,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         bottomNavigationBar: kUrl != ""
             ? Container(
                 height: 75,
-                //color: Color(0xff1c252a),
+                color: Color(0xff1c252a),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(18),
@@ -252,11 +248,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                             size: 30,
                                             color: accent,
                                           ),
-                                          // Icon(
-                                          //   MdiIcons.musicNoteOutline,
-                                          //   size: 30,
-                                          //   color: accent,
-                                          // ),
                                         ),
                                         title: Text(
                                           (songs[index].title)
@@ -302,10 +293,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                                     " removed");
                                                 setSongs();
                                                 if (songs.length == 0) {
-                                                  // Playlist.playlists
-                                                  //     .remove(widget.song);
-                                                  // await Playlist.sharedPrefs();
-                                                  // await Playlist.getVals();
                                                   Navigator.of(context).pop();
                                                 }
                                               },
