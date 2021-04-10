@@ -49,7 +49,6 @@ class _AudioAppState extends State<AudioApp> {
   void initState() {
     super.initState();
     index = widget.index;
-    print(kUrl);
     setState(() {});
     initAudioPlayer();
   }

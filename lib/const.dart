@@ -231,7 +231,6 @@ class Playlist {
     database = openDatabase(
       join(await getDatabasesPath(), name + ".db"),
       onCreate: (db, version) {
-        print("created " + name);
         return db.execute(
           "CREATE TABLE " +
               name +
@@ -251,7 +250,6 @@ class Playlist {
       recent.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print("inserted");
   }
 
   static Future playlistList(name) async {

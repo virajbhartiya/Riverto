@@ -65,7 +65,6 @@ class _PlaylistsState extends State<Playlists> {
       checker = "yes";
     });
 
-    print(this.songs);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -236,8 +235,6 @@ class _PlaylistsState extends State<Playlists> {
                                     try {
                                       await Playlist.playlistList(
                                           playlistNames[index]);
-
-                                      print(Playlist.playlistSongs[0].title);
 
                                       return Navigator.of(context).push(
                                           CupertinoPageRoute(

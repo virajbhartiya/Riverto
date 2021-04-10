@@ -98,7 +98,6 @@ class AppState extends State<Riverto> {
         ..lyrics = lyrics
         ..image = image
         ..id = id;
-      print(kUrl);
       // recentSongs.add(recentlyPlayed);
       await Const.insertRecent(recentlyPlayed);
       Const.change();
@@ -584,19 +583,6 @@ class AppState extends State<Riverto> {
                                                                 Playlist.playlists[
                                                                     ind]);
 
-                                                            print(
-                                                              searchedList[
-                                                                          index]
-                                                                      ['title']
-                                                                  .toString()
-                                                                  .split("(")[0]
-                                                                  .replaceAll(
-                                                                      "&quot;",
-                                                                      "\"")
-                                                                  .replaceAll(
-                                                                      "&amp;",
-                                                                      "&"),
-                                                            );
                                                             Navigator.of(
                                                                     context)
                                                                 .pop();
@@ -629,8 +615,6 @@ class AppState extends State<Riverto> {
 
                                                               Playlist
                                                                   .sharedPrefs();
-                                                              print(Playlist
-                                                                  .playlists);
                                                               await fetchLyrics(
                                                                   searchedList[
                                                                           index][
@@ -747,29 +731,6 @@ class AppState extends State<Riverto> {
 
                                                                   Playlist
                                                                       .sharedPrefs();
-                                                                  print(Playlist
-                                                                      .playlists);
-                                                                  await fetchLyrics(
-                                                                      searchedList[index]
-                                                                          [
-                                                                          'id'],
-                                                                      searchedList[index]
-                                                                              [
-                                                                              'more_info']
-                                                                          [
-                                                                          "singers"],
-                                                                      searchedList[index]
-                                                                              [
-                                                                              'title']
-                                                                          .toString()
-                                                                          .split("(")[
-                                                                              0]
-                                                                          .replaceAll(
-                                                                              "&quot;",
-                                                                              "\"")
-                                                                          .replaceAll(
-                                                                              "&amp;",
-                                                                              "&"));
 
                                                                   QueueModel s =
                                                                       new QueueModel()
@@ -1080,7 +1041,6 @@ class AppState extends State<Riverto> {
                                                                                 Playlist.playlists.add(addPlaylist.text);
 
                                                                                 Playlist.sharedPrefs();
-                                                                                print(Playlist.playlists);
                                                                                 await fetchLyrics(Const.recentSongs[index].id, Const.recentSongs[index].artist, Const.recentSongs[index].title);
 
                                                                                 QueueModel s = new QueueModel()
@@ -1129,7 +1089,6 @@ class AppState extends State<Riverto> {
                                                                                     Playlist.playlists.add(addPlaylist.text);
 
                                                                                     Playlist.sharedPrefs();
-                                                                                    print(Playlist.playlists);
                                                                                     await fetchLyrics(Const.recentSongs[index].id, Const.recentSongs[index].artist, Const.recentSongs[index].title);
                                                                                     QueueModel s = new QueueModel()
                                                                                       ..title = Const.recentSongs[index].title
