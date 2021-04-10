@@ -142,8 +142,8 @@ class Const {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.black,
-      textColor: Color(0xff61e88a),
+      backgroundColor: Color(0xff61e88a),
+      textColor: Colors.black,
       fontSize: 14.0,
     );
   }
@@ -214,7 +214,7 @@ class Const {
 class Playlist {
   static List<String> playlists = [];
 
-  static void sharedPrefs() async {
+  static Future sharedPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setStringList('playlists', playlists);
   }
@@ -233,7 +233,9 @@ class Playlist {
       onCreate: (db, version) {
         print("created " + name);
         return db.execute(
-          "CREATE TABLE recent(title TEXT PRIMARY KEY, url TEXT,album TEXT,artist TEXT,lyrics TEXT,id TEXT)",
+          "CREATE TABLE " +
+              name +
+              " (title TEXT PRIMARY KEY, url TEXT,album TEXT,artist TEXT,lyrics TEXT,id TEXT)",
         );
       },
       version: 1,
@@ -249,15 +251,14 @@ class Playlist {
       recent.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print("inserted " + name);
+    print("inserted");
   }
 
-  static Future<List<QueueModel>> playlistList(name) async {
+  static Future playlistList(name) async {
     await dbSetup(name);
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query(name);
-
-    return List.generate(maps.length, (i) {
+    playlistSongs = List.generate(maps.length, (i) {
       return QueueModel(
           title: maps[i]['title'],
           url: maps[i]['url'],
@@ -266,5 +267,20 @@ class Playlist {
           lyrics: maps[i]['lyrics'],
           id: maps[i]['id']);
     });
+    // return playlistSongs;
   }
+
+  static Future<void> deleteDbElement(String id, name) async {
+    await dbSetup(name);
+    final db = await database;
+
+    await db.delete(
+      name,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+    await playlistList(name);
+  }
+
+  static List<QueueModel> playlistSongs;
 }

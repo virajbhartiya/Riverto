@@ -545,20 +545,61 @@ class AppState extends State<Riverto> {
                                                         .playlists.length,
                                                     itemBuilder:
                                                         (BuildContext context,
-                                                            int index) {
+                                                            int ind) {
                                                       return TextButton(
                                                           clipBehavior:
                                                               Clip.antiAlias,
                                                           child: Text(
                                                               Playlist.playlists[
-                                                                  index],
+                                                                  ind],
                                                               style: TextStyle(
-                                                                  color:
-                                                                      accent)),
-                                                          onPressed: () {
-                                                            print(Playlist
-                                                                    .playlists[
-                                                                index]);
+                                                                  color: accent,
+                                                                  fontSize:
+                                                                      25)),
+                                                          onPressed: () async {
+                                                            QueueModel s =
+                                                                new QueueModel()
+                                                                  ..title = searchedList[index]['title']
+                                                                      .toString()
+                                                                      .split("(")[
+                                                                          0]
+                                                                      .replaceAll(
+                                                                          "&quot;",
+                                                                          "\"")
+                                                                      .replaceAll(
+                                                                          "&amp;", "&")
+                                                                  ..album = searchedList[index]
+                                                                          ['more_info']
+                                                                      ["album"]
+                                                                  ..artist = searchedList[index]
+                                                                          ['more_info'][
+                                                                      "singers"]
+                                                                  ..id =
+                                                                      searchedList[index]
+                                                                          ['id']
+                                                                  ..lyrics = lyr
+                                                                  ..url = url;
+                                                            Playlist.insertSong(
+                                                                s,
+                                                                Playlist.playlists[
+                                                                    ind]);
+
+                                                            print(
+                                                              searchedList[
+                                                                          index]
+                                                                      ['title']
+                                                                  .toString()
+                                                                  .split("(")[0]
+                                                                  .replaceAll(
+                                                                      "&quot;",
+                                                                      "\"")
+                                                                  .replaceAll(
+                                                                      "&amp;",
+                                                                      "&"),
+                                                            );
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
                                                           });
                                                     }),
                                                 actions: <Widget>[
@@ -567,8 +608,10 @@ class AppState extends State<Riverto> {
                                                     onPressed: () {
                                                       Navigator.of(ctx).pop();
                                                       showDialog(
+                                                        barrierDismissible:
+                                                            false,
                                                         context: context,
-                                                        builder: (ctx) =>
+                                                        builder: (ct) =>
                                                             AlertDialog(
                                                           title: Text(
                                                               "Create Playlist.",
@@ -583,9 +626,7 @@ class AppState extends State<Riverto> {
                                                               Playlist.playlists
                                                                   .add(addPlaylist
                                                                       .text);
-                                                              Playlist.playlists
-                                                                  .forEach(
-                                                                      (element) {});
+
                                                               Playlist
                                                                   .sharedPrefs();
                                                               print(Playlist
@@ -642,7 +683,7 @@ class AppState extends State<Riverto> {
                                                                       .text);
                                                               addPlaylist.text =
                                                                   '';
-                                                              Navigator.of(ctx)
+                                                              Navigator.of(ct)
                                                                   .pop();
                                                             },
                                                             controller:
@@ -758,7 +799,7 @@ class AppState extends State<Riverto> {
                                                                   addPlaylist
                                                                       .text = '';
                                                                   Navigator.of(
-                                                                          ctx)
+                                                                          ct)
                                                                       .pop();
                                                                 },
                                                               ),
@@ -787,7 +828,7 @@ class AppState extends State<Riverto> {
                                                         style: TextStyle(
                                                             fontSize: 15,
                                                             color:
-                                                                accentLight)),
+                                                                Colors.black)),
                                                   ),
                                                 ],
                                               ),
@@ -950,24 +991,205 @@ class AppState extends State<Riverto> {
                                                           IconButton(
                                                             color: accent,
                                                             icon: Icon(MdiIcons
+                                                                .playlistMusicOutline),
+                                                            onPressed: () {
+                                                              // showDialog(
+                                                              //     context: context,
+                                                              //     builder:
+                                                              //         (context) => AlertDialog(
+                                                              //                 actions: <Widget>[
+                                                              //                   ListView.builder(
+                                                              //                     itemCount: Const
+                                                              //                         .playlists
+                                                              //                         .length,
+                                                              //                     itemBuilder:
+                                                              //                         (BuildContext
+                                                              //                                 context,
+                                                              //                             int index) {
+                                                              //                       return Container(
+                                                              //                           child: Text(
+                                                              //                               Const.playlists[
+                                                              //                                   index],
+                                                              //                               style:
+                                                              //                                   TextStyle(color: accent)));
+                                                              //                     },
+                                                              //                   )
+                                                              // ]));
+                                                              return showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (ctx) =>
+                                                                    AlertDialog(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  title: Text(
+                                                                      "Playlists.",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              accent)),
+                                                                  content: ListView
+                                                                      .builder(
+                                                                          shrinkWrap:
+                                                                              true,
+                                                                          itemCount: Playlist
+                                                                              .playlists
+                                                                              .length,
+                                                                          itemBuilder:
+                                                                              (BuildContext context, int ind) {
+                                                                            return TextButton(
+                                                                                clipBehavior: Clip.antiAlias,
+                                                                                child: Text(Playlist.playlists[ind], style: TextStyle(color: accent, fontSize: 25)),
+                                                                                onPressed: () async {
+                                                                                  fetchLyrics(Const.recentSongs[index].id, Const.recentSongs[index].artist, Const.recentSongs[index].title);
+                                                                                  QueueModel s = new QueueModel()
+                                                                                    ..title = Const.recentSongs[index].title
+                                                                                    ..album = Const.recentSongs[index].album
+                                                                                    ..artist = Const.recentSongs[index].artist
+                                                                                    ..id = Const.recentSongs[index].id
+                                                                                    ..lyrics = lyr
+                                                                                    ..url = url;
+                                                                                  Playlist.insertSong(s, Playlist.playlists[ind]);
+
+                                                                                  Navigator.of(context).pop();
+                                                                                });
+                                                                          }),
+                                                                  actions: <
+                                                                      Widget>[
+                                                                    FlatButton(
+                                                                      color:
+                                                                          accent,
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(ctx)
+                                                                            .pop();
+                                                                        showDialog(
+                                                                          barrierDismissible:
+                                                                              false,
+                                                                          context:
+                                                                              context,
+                                                                          builder: (context) =>
+                                                                              AlertDialog(
+                                                                            title:
+                                                                                Text("Create Playlist.", style: TextStyle(color: accent)),
+                                                                            backgroundColor:
+                                                                                Colors.black,
+                                                                            content:
+                                                                                TextField(
+                                                                              onSubmitted: (String value) async {
+                                                                                Playlist.playlists.add(addPlaylist.text);
+
+                                                                                Playlist.sharedPrefs();
+                                                                                print(Playlist.playlists);
+                                                                                await fetchLyrics(Const.recentSongs[index].id, Const.recentSongs[index].artist, Const.recentSongs[index].title);
+
+                                                                                QueueModel s = new QueueModel()
+                                                                                  ..title = Const.recentSongs[index].title
+                                                                                  ..album = Const.recentSongs[index].album
+                                                                                  ..artist = Const.recentSongs[index].artist
+                                                                                  ..id = Const.recentSongs[index].id
+                                                                                  ..lyrics = lyr
+                                                                                  ..url = url;
+                                                                                Playlist.insertSong(s, addPlaylist.text);
+                                                                                addPlaylist.text = '';
+                                                                                Navigator.of(context).pop();
+                                                                              },
+                                                                              controller: addPlaylist,
+                                                                              style: TextStyle(
+                                                                                fontSize: 16,
+                                                                                color: Color(0xff61e88a),
+                                                                              ),
+                                                                              cursorColor: Colors.green[50],
+                                                                              decoration: InputDecoration(
+                                                                                // fillColor: Color(0xff263238),
+                                                                                fillColor: Colors.black,
+                                                                                filled: true,
+                                                                                enabledBorder: const OutlineInputBorder(
+                                                                                  borderRadius: BorderRadius.all(
+                                                                                    Radius.circular(100),
+                                                                                  ),
+                                                                                  borderSide: BorderSide(
+                                                                                    // color: Color(0xff263238),
+                                                                                    color: Color(0xff61e88a),
+                                                                                  ),
+                                                                                ),
+                                                                                focusedBorder: OutlineInputBorder(
+                                                                                  borderRadius: BorderRadius.all(
+                                                                                    Radius.circular(100),
+                                                                                  ),
+                                                                                  borderSide: BorderSide(color: accent),
+                                                                                ),
+                                                                                suffixIcon: IconButton(
+                                                                                  icon: Icon(
+                                                                                    Icons.add,
+                                                                                    color: accent,
+                                                                                  ),
+                                                                                  color: accent,
+                                                                                  onPressed: () async {
+                                                                                    Playlist.playlists.add(addPlaylist.text);
+
+                                                                                    Playlist.sharedPrefs();
+                                                                                    print(Playlist.playlists);
+                                                                                    await fetchLyrics(Const.recentSongs[index].id, Const.recentSongs[index].artist, Const.recentSongs[index].title);
+                                                                                    QueueModel s = new QueueModel()
+                                                                                      ..title = Const.recentSongs[index].title
+                                                                                      ..album = Const.recentSongs[index].album
+                                                                                      ..artist = Const.recentSongs[index].artist
+                                                                                      ..id = Const.recentSongs[index].id
+                                                                                      ..lyrics = lyr
+                                                                                      ..url = url;
+                                                                                    Playlist.insertSong(s, addPlaylist.text);
+                                                                                    addPlaylist.text = '';
+                                                                                    Navigator.of(context).pop();
+                                                                                  },
+                                                                                ),
+                                                                                border: InputBorder.none,
+                                                                                hintText: "Name",
+                                                                                hintStyle: TextStyle(
+                                                                                  color: accent,
+                                                                                ),
+                                                                                contentPadding: const EdgeInsets.only(
+                                                                                  left: 18,
+                                                                                  right: 20,
+                                                                                  top: 14,
+                                                                                  bottom: 14,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                      child: Text(
+                                                                          "+ Playlist",
+                                                                          style: TextStyle(
+                                                                              fontSize: 15,
+                                                                              color: Colors.black)),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                          IconButton(
+                                                            color: accent,
+                                                            icon: Icon(MdiIcons
                                                                 .apacheKafka),
                                                             onPressed:
                                                                 () async {
                                                               await fetchLyrics(
-                                                                      Const
-                                                                          .recentSongs[
-                                                                              index]
-                                                                          .id,
-                                                                      Const
-                                                                          .recentSongs[
-                                                                              index]
-                                                                          .artist,
-                                                                      Const
-                                                                          .recentSongs[
-                                                                              index]
-                                                                          .title)
-                                                                  .then((_) =>
-                                                                      {});
+                                                                  Const
+                                                                      .recentSongs[
+                                                                          index]
+                                                                      .id,
+                                                                  Const
+                                                                      .recentSongs[
+                                                                          index]
+                                                                      .artist,
+                                                                  Const
+                                                                      .recentSongs[
+                                                                          index]
+                                                                      .title);
+
                                                               QueueModel
                                                                   queueItem =
                                                                   new QueueModel()

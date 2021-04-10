@@ -22,18 +22,20 @@ class PlaylistScreen extends StatefulWidget {
 class _PlaylistScreenState extends State<PlaylistScreen> {
   List<QueueModel> songs;
   int index;
+  void setSongs() {
+    setState(() {
+      songs = Playlist.playlistSongs;
+    });
+  }
+
   @override
-  // ignore: must_call_super
   void initState() {
+    super.initState();
+    setSongs();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.black,
       statusBarColor: Colors.transparent,
     ));
-    getsongs();
-  }
-
-  void getsongs() async {
-    songs = await Playlist.playlistList(widget.song);
   }
 
   getSongDetails(String id, int index) async {
@@ -196,7 +198,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            "Queue.",
+                            widget.song + ".",
                             style: TextStyle(
                               color: Color(0xff61e88a),
                               fontSize: 45,
@@ -263,14 +265,47 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                           songs[index].artist,
                                           style: TextStyle(color: Colors.white),
                                         ),
-                                        trailing: IconButton(
-                                          color: accent,
-                                          icon: Icon(MdiIcons.downloadOutline),
-                                          onPressed: () async {
-                                            Const.toast("Starting Download!");
-                                            Const.downloadSong(
-                                                songs[index].id, context);
-                                          },
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              color: accent,
+                                              icon: Icon(
+                                                  MdiIcons.downloadOutline),
+                                              onPressed: () async {
+                                                Const.toast(
+                                                    "Starting Download!");
+                                                Const.downloadSong(
+                                                    Playlist
+                                                        .playlistSongs[index]
+                                                        .id,
+                                                    context);
+                                              },
+                                            ),
+                                            IconButton(
+                                              color: Colors.red[600],
+                                              icon: Icon(MdiIcons.delete),
+                                              onPressed: () async {
+                                                songs
+                                                    .remove(songs[index].title);
+                                                await Playlist.deleteDbElement(
+                                                    Playlist
+                                                        .playlistSongs[index]
+                                                        .id,
+                                                    widget.song);
+                                                Const.toast(songs[index].title +
+                                                    " removed");
+                                                setSongs();
+                                                if (songs.length == 0) {
+                                                  // Playlist.playlists
+                                                  //     .remove(widget.song);
+                                                  // await Playlist.sharedPrefs();
+                                                  // await Playlist.getVals();
+                                                  Navigator.of(context).pop();
+                                                }
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],

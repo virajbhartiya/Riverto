@@ -19,11 +19,21 @@ class Playlists extends StatefulWidget {
 }
 
 class _PlaylistsState extends State<Playlists> {
+  List<String> playlistNames = [];
   List<QueueModel> songs = [];
   int i;
+
+  void setnames() {
+    setState(() {
+      playlistNames = Playlist.playlists;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    Playlist.playlistSongs = [];
+    setnames();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.black,
       statusBarColor: Colors.transparent,
@@ -216,14 +226,28 @@ class _PlaylistsState extends State<Playlists> {
                               child: Card(
                                 color: Colors.black,
                                 shape: RoundedRectangleBorder(
+                                  side:
+                                      new BorderSide(color: accent, width: 2.0),
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 elevation: 0,
                                 child: InkWell(
-                                  onTap: () => Navigator.of(context).push(
-                                      CupertinoPageRoute(
-                                          builder: (context) => PlaylistScreen(
-                                              Playlist.playlists[index]))),
+                                  onTap: () async {
+                                    try {
+                                      await Playlist.playlistList(
+                                          playlistNames[index]);
+
+                                      print(Playlist.playlistSongs[0].title);
+
+                                      return Navigator.of(context).push(
+                                          CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  PlaylistScreen(Playlist
+                                                      .playlists[index])));
+                                    } catch (e) {
+                                      Const.toast("Playlist empty");
+                                    }
+                                  },
                                   borderRadius: BorderRadius.circular(10.0),
                                   splashColor: accent,
                                   hoverColor: accent,
@@ -233,13 +257,33 @@ class _PlaylistsState extends State<Playlists> {
                                     children: <Widget>[
                                       ListTile(
                                         title: Text(
-                                          (Playlist.playlists[index])
+                                          (playlistNames[index])
                                               .toString()
                                               .split("(")[0]
                                               .replaceAll("&quot;", "\"")
                                               .replaceAll("&amp;", "&"),
                                           style: TextStyle(
                                               color: accent, fontSize: 25),
+                                        ),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              color: Colors.red[600],
+                                              icon: Icon(MdiIcons.delete),
+                                              onPressed: () async {
+                                                await Playlist.playlistList(
+                                                    playlistNames[index]);
+
+                                                Playlist.playlists.remove(
+                                                    playlistNames[index]);
+                                                setnames();
+                                                Playlist.sharedPrefs();
+                                                Const.toast(
+                                                    "Playlist deleated");
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
