@@ -41,6 +41,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
   getSongDetails(String id, int index) async {
     try {
       await fetchSongDetails(id);
+      print("k");
+      print(kUrl);
       RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
         ..title = title
         ..url = kUrl
@@ -59,12 +61,15 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     setState(() {
       checker = "yes";
     });
-    kUrl = songs[index].url;
+    // kUrl =
+    // print("url: " + songs[index].url);
     // image = songs[index].image;
     title = songs[index].title;
     album = songs[index].album;
     artist = songs[index].artist;
     lyrics = songs[index].lyrics;
+    print("hello");
+    print(kUrl);
     Navigator.push(
       context,
       MaterialPageRoute(

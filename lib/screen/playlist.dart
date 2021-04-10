@@ -232,18 +232,18 @@ class _PlaylistsState extends State<Playlists> {
                                 elevation: 0,
                                 child: InkWell(
                                   onTap: () async {
-                                    try {
-                                      await Playlist.playlistList(
-                                          playlistNames[index]);
+                                    // try {
+                                    await Playlist.playlistList(
+                                        playlistNames[index]);
 
-                                      return Navigator.of(context).push(
-                                          CupertinoPageRoute(
-                                              builder: (context) =>
-                                                  PlaylistScreen(Playlist
-                                                      .playlists[index])));
-                                    } catch (e) {
-                                      Const.toast("Playlist empty");
-                                    }
+                                    return Navigator.of(context).push(
+                                        CupertinoPageRoute(
+                                            builder: (context) =>
+                                                PlaylistScreen(Playlist
+                                                    .playlists[index])));
+                                    // } catch (e) {
+                                    // Const.toast("Playlist empty");
+                                    // }
                                   },
                                   borderRadius: BorderRadius.circular(10.0),
                                   splashColor: accent,

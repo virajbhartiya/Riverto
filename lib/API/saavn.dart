@@ -90,11 +90,31 @@ Future fetchSongDetails(songId) async {
       .replaceAll("&quot;", "\"")
       .replaceAll("&#039;", "'")
       .replaceAll("&amp;", "&");
+  has_320 = getMain[songId]["more_info"]["320kbps"];
+  kUrl = await DesPlugin.decrypt(
+      key, getMain[songId]["more_info"]["encrypted_media_url"]);
+
+  rawkUrl = kUrl;
+
+  final client = http.Client();
+  final request = http.Request('HEAD', Uri.parse(kUrl))
+    ..followRedirects = false;
+  final response = await client.send(request);
+  kUrl = (response.headers['location']);
+  print("this is url");
+  print(kUrl);
+  artist = (getMain[songId]["more_info"]["artistMap"]["primary_artists"][0]
+          ["name"])
+      .toString()
+      .replaceAll("&quot;", "\"")
+      .replaceAll("&#039;", "'")
+      .replaceAll("&amp;", "&");
 
   try {
     artist =
         getMain[songId]['more_info']['artistMap']['primary_artists'][0]['name'];
   } catch (e) {
+    print(e.message);
     artist = "-";
   }
   if (getMain[songId]["more_info"]["has_lyrics"] == "true") {
@@ -118,22 +138,4 @@ Future fetchSongDetails(songId) async {
       lyrics = lyricsResponse['lyrics'];
     }
   }
-
-  has_320 = getMain[songId]["more_info"]["320kbps"];
-  kUrl = await DesPlugin.decrypt(
-      key, getMain[songId]["more_info"]["encrypted_media_url"]);
-
-  rawkUrl = kUrl;
-
-  final client = http.Client();
-  final request = http.Request('HEAD', Uri.parse(kUrl))
-    ..followRedirects = false;
-  final response = await client.send(request);
-  kUrl = (response.headers['location']);
-  artist = (getMain[songId]["more_info"]["artistMap"]["primary_artists"][0]
-          ["name"])
-      .toString()
-      .replaceAll("&quot;", "\"")
-      .replaceAll("&#039;", "'")
-      .replaceAll("&amp;", "&");
 }
