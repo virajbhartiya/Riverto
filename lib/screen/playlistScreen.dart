@@ -41,8 +41,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
   getSongDetails(String id, int index) async {
     try {
       await fetchSongDetails(id);
-      print("k");
-      print(kUrl);
       RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
         ..title = title
         ..url = kUrl
@@ -64,8 +62,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     album = songs[index].album;
     artist = songs[index].artist;
     lyrics = songs[index].lyrics;
-    print("hello");
-    print(kUrl);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -82,7 +78,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         bottomNavigationBar: kUrl != ""
             ? Container(
                 height: 75,
-                color: Color(0xff1c252a),
+                // color: Color(0xff1c252a),
+                // color: Colors.black,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(18),

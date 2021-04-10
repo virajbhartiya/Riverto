@@ -101,8 +101,6 @@ Future fetchSongDetails(songId) async {
     ..followRedirects = false;
   final response = await client.send(request);
   kUrl = (response.headers['location']);
-  print("this is url");
-  print(kUrl);
   artist = (getMain[songId]["more_info"]["artistMap"]["primary_artists"][0]
           ["name"])
       .toString()
@@ -114,7 +112,6 @@ Future fetchSongDetails(songId) async {
     artist =
         getMain[songId]['more_info']['artistMap']['primary_artists'][0]['name'];
   } catch (e) {
-    print(e.message);
     artist = "-";
   }
   if (getMain[songId]["more_info"]["has_lyrics"] == "true") {
