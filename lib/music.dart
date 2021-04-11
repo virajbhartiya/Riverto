@@ -370,6 +370,17 @@ class _AudioAppState extends State<AudioApp> {
                       )
                     ],
                   ),
+                  if (index <= widget.songs.length - 2)
+                    Center(
+                        child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Container(
+                        padding: EdgeInsets.all(6),
+                        color: accent,
+                        child: Text(widget.songs[index + 1].title,
+                            style: TextStyle(color: Colors.black)),
+                      ),
+                    )),
                   lyrics != "null"
                       ? Padding(
                           padding: const EdgeInsets.only(top: 20.0),

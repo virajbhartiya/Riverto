@@ -62,10 +62,6 @@ class AppState extends State<Riverto> {
       checker = "no";
       MediaNotification.hideNotification();
     });
-
-    MediaNotification.setListener('next', () {
-      setState(() {});
-    });
   }
   //====================================================
 
@@ -857,7 +853,6 @@ class AppState extends State<Riverto> {
                                                 250,
                                         child: SafeArea(
                                           child: ListView.builder(
-                                            reverse: true,
                                             shrinkWrap: true,
                                             physics:
                                                 NeverScrollableScrollPhysics(),
