@@ -214,6 +214,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                   songs != null
                       //searched songs
                       ? ListView.builder(
+                          reverse: true,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: songs.length,
