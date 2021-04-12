@@ -7,6 +7,7 @@ import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:Riverto/style/appColors.dart';
 import 'API/saavn.dart';
+import 'API/saavn.dart';
 import 'Models/queueModel.dart';
 
 String status = 'hidden';
@@ -369,6 +370,17 @@ class _AudioAppState extends State<AudioApp> {
                       )
                     ],
                   ),
+                  if (index <= widget.songs.length - 2)
+                    Center(
+                        child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Container(
+                        padding: EdgeInsets.all(6),
+                        color: accent,
+                        child: Text(widget.songs[index + 1].title,
+                            style: TextStyle(color: Colors.black)),
+                      ),
+                    )),
                   lyrics != "null"
                       ? Padding(
                           padding: const EdgeInsets.only(top: 20.0),
