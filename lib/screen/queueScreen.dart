@@ -21,13 +21,19 @@ class _QueueScreenState extends State<QueueScreen> {
   List<QueueModel> songs;
   int index;
   @override
-  // ignore: must_call_super
   void initState() {
-    songs = Const.queueSongs;
+    super.initState();
+    setSongs();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.black,
       statusBarColor: Colors.transparent,
     ));
+  }
+
+  void setSongs() {
+    setState(() {
+      songs = Const.queueSongs;
+    });
   }
 
   getSongDetails(String id, int index) async {
@@ -257,14 +263,30 @@ class _QueueScreenState extends State<QueueScreen> {
                                           songs[index].artist,
                                           style: TextStyle(color: Colors.white),
                                         ),
-                                        trailing: IconButton(
-                                          color: accent,
-                                          icon: Icon(MdiIcons.downloadOutline),
-                                          onPressed: () async {
-                                            Const.toast("Starting Download!");
-                                            Const.downloadSong(
-                                                songs[index].id, context);
-                                          },
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              color: accent,
+                                              icon: Icon(
+                                                  MdiIcons.downloadOutline),
+                                              onPressed: () async {
+                                                Const.toast(
+                                                    "Starting Download!");
+                                                Const.downloadSong(
+                                                    songs[index].id, context);
+                                              },
+                                            ),
+                                            IconButton(
+                                              color: Colors.red[600],
+                                              icon: Icon(MdiIcons.delete),
+                                              onPressed: () async {
+                                                Const.queueSongs
+                                                    .remove(songs[index]);
+                                                setSongs();
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],

@@ -98,7 +98,6 @@ class AppState extends State<Riverto> {
         ..lyrics = lyrics
         ..image = image
         ..id = id;
-      // recentSongs.add(recentlyPlayed);
       await Const.insertRecent(recentlyPlayed);
       Const.change();
     } catch (e) {
@@ -190,13 +189,10 @@ class AppState extends State<Riverto> {
 
     return Container(
       child: Scaffold(
-        // resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.transparent,
-        //backgroundColor: Color(0xff384850),
         bottomNavigationBar: kUrl != ""
             ? Container(
                 height: 75,
-                //color: Color(0xff1c252a),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(18),
@@ -396,7 +392,6 @@ class AppState extends State<Riverto> {
                     ),
                     cursorColor: Colors.green[50],
                     decoration: InputDecoration(
-                      // fillColor: Color(0xff263238),
                       fillColor: Colors.black,
                       filled: true,
                       enabledBorder: const OutlineInputBorder(
@@ -404,7 +399,6 @@ class AppState extends State<Riverto> {
                           Radius.circular(100),
                         ),
                         borderSide: BorderSide(
-                          // color: Color(0xff263238),
                           color: Color(0xff61e88a),
                         ),
                       ),
@@ -459,7 +453,6 @@ class AppState extends State<Riverto> {
                               padding: const EdgeInsets.only(top: 5, bottom: 5),
                               child: Card(
                                 color: Colors.black,
-                                // color: Colors.green,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
@@ -482,11 +475,6 @@ class AppState extends State<Riverto> {
                                         size: 30,
                                         color: accent,
                                       ),
-                                      // Icon(
-                                      //   MdiIcons.musicNoteOutline,
-                                      //   size: 30,
-                                      //   color: accent,
-                                      // ),
                                     ),
                                     title: Text(
                                       (searchedList[index]['title'])
@@ -509,28 +497,6 @@ class AppState extends State<Riverto> {
                                           icon: Icon(
                                               MdiIcons.playlistMusicOutline),
                                           onPressed: () {
-                                            // showDialog(
-                                            //     context: context,
-                                            //     builder:
-                                            //         (context) => AlertDialog(
-                                            //                 actions: <Widget>[
-                                            //                   ListView.builder(
-                                            //                     itemCount: Const
-                                            //                         .playlists
-                                            //                         .length,
-                                            //                     itemBuilder:
-                                            //                         (BuildContext
-                                            //                                 context,
-                                            //                             int index) {
-                                            //                       return Container(
-                                            //                           child: Text(
-                                            //                               Const.playlists[
-                                            //                                   index],
-                                            //                               style:
-                                            //                                   TextStyle(color: accent)));
-                                            //                     },
-                                            //                   )
-                                            // ]));
                                             return showDialog(
                                               context: context,
                                               builder: (ctx) => AlertDialog(
@@ -681,7 +647,6 @@ class AppState extends State<Riverto> {
                                                                 .green[50],
                                                             decoration:
                                                                 InputDecoration(
-                                                              // fillColor: Color(0xff263238),
                                                               fillColor:
                                                                   Colors.black,
                                                               filled: true,
@@ -696,7 +661,6 @@ class AppState extends State<Riverto> {
                                                                 ),
                                                                 borderSide:
                                                                     BorderSide(
-                                                                  // color: Color(0xff263238),
                                                                   color: Color(
                                                                       0xff61e88a),
                                                                 ),
@@ -731,6 +695,27 @@ class AppState extends State<Riverto> {
 
                                                                   Playlist
                                                                       .sharedPrefs();
+                                                                  await fetchLyrics(
+                                                                      searchedList[index]
+                                                                          [
+                                                                          'id'],
+                                                                      searchedList[index]
+                                                                              [
+                                                                              'more_info']
+                                                                          [
+                                                                          "singers"],
+                                                                      searchedList[index]
+                                                                              [
+                                                                              'title']
+                                                                          .toString()
+                                                                          .split("(")[
+                                                                              0]
+                                                                          .replaceAll(
+                                                                              "&quot;",
+                                                                              "\"")
+                                                                          .replaceAll(
+                                                                              "&amp;",
+                                                                              "&"));
 
                                                                   QueueModel s =
                                                                       new QueueModel()
@@ -874,14 +859,11 @@ class AppState extends State<Riverto> {
                                             itemCount: Const.recentSongs.length,
                                             itemBuilder:
                                                 (BuildContext ctxt, int index) {
-                                              // Const.recentSongs.length,
-                                              // (index) {
                                               return Padding(
                                                 padding: const EdgeInsets.only(
                                                     top: 0, bottom: 5),
                                                 child: Card(
                                                   color: Colors.black,
-                                                  // color: Colors.green,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -901,8 +883,6 @@ class AppState extends State<Riverto> {
                                                           context,
                                                           index);
                                                     },
-                                                    // onLongPress: () =>
-                                                    //     topSongs(),
                                                     splashColor: accent,
                                                     hoverColor: accent,
                                                     focusColor: accent,
@@ -918,11 +898,6 @@ class AppState extends State<Riverto> {
                                                           size: 30,
                                                           color: accent,
                                                         ),
-                                                        // Icon(
-                                                        //   MdiIcons.musicNoteOutline,
-                                                        //   size: 30,
-                                                        //   color: accent,
-                                                        // ),
                                                       ),
                                                       title: Text(
                                                         (Const
@@ -954,28 +929,6 @@ class AppState extends State<Riverto> {
                                                             icon: Icon(MdiIcons
                                                                 .playlistMusicOutline),
                                                             onPressed: () {
-                                                              // showDialog(
-                                                              //     context: context,
-                                                              //     builder:
-                                                              //         (context) => AlertDialog(
-                                                              //                 actions: <Widget>[
-                                                              //                   ListView.builder(
-                                                              //                     itemCount: Const
-                                                              //                         .playlists
-                                                              //                         .length,
-                                                              //                     itemBuilder:
-                                                              //                         (BuildContext
-                                                              //                                 context,
-                                                              //                             int index) {
-                                                              //                       return Container(
-                                                              //                           child: Text(
-                                                              //                               Const.playlists[
-                                                              //                                   index],
-                                                              //                               style:
-                                                              //                                   TextStyle(color: accent)));
-                                                              //                     },
-                                                              //                   )
-                                                              // ]));
                                                               return showDialog(
                                                                 context:
                                                                     context,
@@ -1061,7 +1014,6 @@ class AppState extends State<Riverto> {
                                                                               ),
                                                                               cursorColor: Colors.green[50],
                                                                               decoration: InputDecoration(
-                                                                                // fillColor: Color(0xff263238),
                                                                                 fillColor: Colors.black,
                                                                                 filled: true,
                                                                                 enabledBorder: const OutlineInputBorder(
@@ -1069,7 +1021,6 @@ class AppState extends State<Riverto> {
                                                                                     Radius.circular(100),
                                                                                   ),
                                                                                   borderSide: BorderSide(
-                                                                                    // color: Color(0xff263238),
                                                                                     color: Color(0xff61e88a),
                                                                                   ),
                                                                                 ),
@@ -1203,32 +1154,12 @@ class AppState extends State<Riverto> {
                                                   ),
                                                 ),
                                               );
-                                              // getTopSong(
-                                              //     Const.recentSongs[index]
-                                              //         .image,
-                                              //     Const.recentSongs[index]
-                                              //         .title,
-                                              //     Const.recentSongs[index]
-                                              //         .artist,
-                                              //     Const.recentSongs[index]
-                                              //         .id,
-                                              //     index);
-                                              // data.data[index]["image"],
-                                              // data.data[index]["title"],
-                                              // data.data[index][
-                                              //                 "more_info"]
-                                              //             ["artistMap"][
-                                              //         "primary_artists"]
-                                              //     [0]["name"],
-                                              // data.data[index]["id"],
-                                              // index);
                                             },
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  // SizedBox(height: 20),
                                 ],
                               ),
                             )
@@ -1237,15 +1168,7 @@ class AppState extends State<Riverto> {
                               child: Center(
                                   child: Text("Search Some Songs.",
                                       style: TextStyle(
-                                          color: accent, fontSize: 20))
-                                  // child: Padding(
-                                  //   padding: const EdgeInsets.all(35.0),
-                                  //   child: CircularProgressIndicator(
-                                  //     valueColor:
-                                  //         new AlwaysStoppedAnimation<Color>(accent),
-                                  //   ),
-                                  // ),
-                                  ),
+                                          color: accent, fontSize: 20))),
                             )
                 ],
               ),

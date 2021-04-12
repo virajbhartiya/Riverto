@@ -41,8 +41,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
   getSongDetails(String id, int index) async {
     try {
       await fetchSongDetails(id);
-      print("k");
-      print(kUrl);
       RecentlyPlayed recentlyPlayed = new RecentlyPlayed()
         ..title = title
         ..url = kUrl
@@ -52,7 +50,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         ..image = image
         ..id = id;
 
-      // recentSongs.add(recentlyPlayed);
       await Const.insertRecent(recentlyPlayed);
       Const.change();
     } catch (e) {
@@ -61,15 +58,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     setState(() {
       checker = "yes";
     });
-    // kUrl =
-    // print("url: " + songs[index].url);
-    // image = songs[index].image;
     title = songs[index].title;
     album = songs[index].album;
     artist = songs[index].artist;
     lyrics = songs[index].lyrics;
-    print("hello");
-    print(kUrl);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -86,7 +78,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         bottomNavigationBar: kUrl != ""
             ? Container(
                 height: 75,
-                //color: Color(0xff1c252a),
+                // color: Color(0xff1c252a),
+                // color: Colors.black,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(18),
@@ -221,6 +214,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                   songs != null
                       //searched songs
                       ? ListView.builder(
+                          reverse: true,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: songs.length,
@@ -252,11 +246,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                             size: 30,
                                             color: accent,
                                           ),
-                                          // Icon(
-                                          //   MdiIcons.musicNoteOutline,
-                                          //   size: 30,
-                                          //   color: accent,
-                                          // ),
                                         ),
                                         title: Text(
                                           (songs[index].title)
@@ -302,10 +291,6 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                                     " removed");
                                                 setSongs();
                                                 if (songs.length == 0) {
-                                                  // Playlist.playlists
-                                                  //     .remove(widget.song);
-                                                  // await Playlist.sharedPrefs();
-                                                  // await Playlist.getVals();
                                                   Navigator.of(context).pop();
                                                 }
                                               },
