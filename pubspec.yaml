@@ -1,7 +1,7 @@
 name: Riverto
 description: A new Flutter project.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 2.0.0+0
+version: 2.0.0+2
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -48,11 +48,3 @@ flutter:
         - asset: fonts/DMSans-Italic.ttf
         - asset: fonts/DMSans-Regular.ttf
         - asset: fonts/DMSans-Medium.ttf
-# flutter:
-#   uses-material-design: true
-#   fonts:
-#     - family: Less
-#       fonts:
-#         - asset: fonts/Less.otf
-#         - asset: fonts/Less-Light.otf
-#         - asset: fonts/Less-Bold.otf

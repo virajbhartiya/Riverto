@@ -117,7 +117,7 @@ class AppState extends State<Riverto> {
 
   @override
   Widget build(BuildContext context) {
-    String lyr, url, raw;
+    String lyr, url;
     Future fetchLyrics(id, art, tit) async {
       String songUrl =
           "https://www.jiosaavn.com/api.php?app_version=5.18.3&api_version=4&readable_version=5.18.3&v=79&_format=json&__call=song.getDetails&pids=" +
@@ -171,8 +171,6 @@ class AppState extends State<Riverto> {
 
       url = await DesPlugin.decrypt(
           key, getMain[id]["more_info"]["encrypted_media_url"]);
-
-      raw = url;
 
       final client = http.Client();
       final request = http.Request('HEAD', Uri.parse(url))
